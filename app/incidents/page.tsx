@@ -60,6 +60,10 @@ export default function IncidentsPage() {
   const [toastMessage, setToastMessage] = useState('');
   const [toastType, setToastType] = useState<'success' | 'error'>('success');
 
+  // Filter states
+  const [filterSeverity, setFilterSeverity] = useState<string>('semua');
+  const [filterStatus, setFilterStatus] = useState<string>('semua');
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -141,6 +145,37 @@ export default function IncidentsPage() {
     setShowToast(true);
   };
 
+  // Filter function
+  const filteredIncidents = incidents.filter((incident) => {
+    const matchSeverity = filterSeverity === 'semua' || incident.severity === filterSeverity;
+    const matchStatus = filterStatus === 'semua' || incident.status === filterStatus;
+    return matchSeverity && matchStatus;
+  });
+
+  // Reset filter function
+  const resetFilters = () => {
+    setFilterSeverity('semua');
+    setFilterStatus('semua');
+    console.log('Filter direset ke default');
+  };
+
+  // Handle filter change
+  const handleSeverityChange = (value: string) => {
+    setFilterSeverity(value);
+    console.log('Filter Keparahan:', value);
+    console.log('Data yang ditampilkan:', incidents.filter(inc => 
+      value === 'semua' || inc.severity === value
+    ));
+  };
+
+  const handleStatusChange = (value: string) => {
+    setFilterStatus(value);
+    console.log('Filter Status:', value);
+    console.log('Data yang ditampilkan:', incidents.filter(inc => 
+      value === 'semua' || inc.status === value
+    ));
+  };
+
   const getSeverityBadge = (severity: string) => {
     const styles = {
       kritis: 'bg-error/10 text-error',
@@ -200,24 +235,35 @@ export default function IncidentsPage() {
 
           {/* Filter Bar */}
           <div className="flex flex-wrap items-center gap-4 mb-6 py-2">
-            <select className="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm focus:ring-1 focus:ring-primary min-w-[140px]">
-              <option>Semua Keparahan</option>
-              <option>Kritis</option>
-              <option>Tinggi</option>
-              <option>Sedang</option>
-              <option>Rendah</option>
+            <select 
+              value={filterSeverity}
+              onChange={(e) => handleSeverityChange(e.target.value)}
+              className="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm focus:ring-1 focus:ring-primary min-w-[140px]"
+            >
+              <option value="semua">Semua Keparahan</option>
+              <option value="kritis">Kritis</option>
+              <option value="tinggi">Tinggi</option>
+              <option value="sedang">Sedang</option>
+              <option value="rendah">Rendah</option>
             </select>
-            <select className="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm focus:ring-1 focus:ring-primary min-w-[140px]">
-              <option>Semua Status</option>
-              <option>Terbuka</option>
-              <option>Dalam Proses</option>
-              <option>Selesai</option>
+            <select 
+              value={filterStatus}
+              onChange={(e) => handleStatusChange(e.target.value)}
+              className="bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm focus:ring-1 focus:ring-primary min-w-[140px]"
+            >
+              <option value="semua">Semua Status</option>
+              <option value="terbuka">Terbuka</option>
+              <option value="dalam-proses">Dalam Proses</option>
+              <option value="selesai">Selesai</option>
             </select>
             <div className="flex items-center gap-2 bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm cursor-pointer hover:border-primary transition-all">
               <span className="material-symbols-outlined text-sm text-on-surface-variant">calendar_today</span>
               <span>24 Jam Terakhir</span>
             </div>
-            <button className="text-on-surface-variant hover:text-primary text-xs font-medium ml-2">
+            <button 
+              onClick={resetFilters}
+              className="text-on-surface-variant hover:text-primary text-xs font-medium ml-2"
+            >
               Reset Filter
             </button>
           </div>
@@ -252,7 +298,21 @@ export default function IncidentsPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant">
-                  {incidents.map((incident) => (
+                  {filteredIncidents.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center gap-3">
+                          <span className="material-symbols-outlined text-[48px] text-on-surface-variant/30">
+                            search_off
+                          </span>
+                          <p className="text-sm text-on-surface-variant">
+                            Tidak ada insiden yang sesuai dengan filter
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredIncidents.map((incident) => (
                     <tr key={incident.id} className="hover:bg-surface-container-low transition-colors duration-150">
                       <td className="px-6 py-4 font-mono text-sm text-primary font-medium">
                         {incident.id}
@@ -304,7 +364,8 @@ export default function IncidentsPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -312,7 +373,7 @@ export default function IncidentsPage() {
             {/* Pagination */}
             <div className="px-6 py-3 border-t border-outline-variant flex items-center justify-between bg-surface-container-lowest">
               <div className="text-xs text-on-surface-variant">
-                Menampilkan {incidents.length} dari 128 insiden
+                Menampilkan {filteredIncidents.length} dari {incidents.length} insiden
               </div>
               <div className="flex items-center gap-1">
                 <button className="p-1 rounded hover:bg-surface-container disabled:opacity-30" disabled>
