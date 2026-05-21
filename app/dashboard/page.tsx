@@ -16,7 +16,9 @@ interface Incident {
 export default function DashboardPage() {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
   const [deleteId, setDeleteId] = useState("");
+  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" as "success" | "error" });
 
   const incidents: Incident[] = [
@@ -44,6 +46,11 @@ export default function DashboardPage() {
   const confirmDelete = (id: string) => {
     setDeleteId(id);
     setShowDeleteModal(true);
+  };
+
+  const openDetailModal = (incident: Incident) => {
+    setSelectedIncident(incident);
+    setShowDetailModal(true);
   };
 
   const getSeverityClass = (severity: string) => {
@@ -323,6 +330,7 @@ export default function DashboardPage() {
                         <td className="px-6 py-4 text-right">
                           <div className="flex justify-end gap-1">
                             <button
+                              onClick={() => openDetailModal(incident)}
                               className="p-1.5 text-on-surface-variant hover:text-navy-custom transition-colors"
                               title="Detail"
                             >
@@ -524,6 +532,131 @@ export default function DashboardPage() {
                 >
                   Ya, Hapus
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Detail Modal */}
+      {showDetailModal && selectedIncident && (
+        <div className="fixed inset-0 z-[100]">
+          <div className="modal-overlay absolute inset-0" onClick={() => setShowDetailModal(false)}></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl p-6">
+            <div className="bg-surface rounded-2xl shadow-2xl overflow-hidden border border-outline-variant modal-content">
+              <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                <h3 className="font-headline-sm text-[18px] text-navy-custom">Detail Insiden {selectedIncident.id}</h3>
+                <button
+                  className="material-symbols-outlined text-on-surface-variant hover:text-navy-custom transition-colors"
+                  onClick={() => setShowDetailModal(false)}
+                >
+                  close
+                </button>
+              </div>
+              <div className="p-6 space-y-6">
+                {/* ID & Status */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
+                      ID Insiden
+                    </label>
+                    <p className="text-lg font-mono font-bold text-navy-custom">{selectedIncident.id}</p>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
+                      Status
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`w-2 h-2 rounded-full ${
+                          selectedIncident.severity === "kritis" ? "bg-error animate-pulse" : "bg-slate-400"
+                        }`}
+                      ></span>
+                      <span className="text-sm font-medium text-on-surface">{selectedIncident.status}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Title */}
+                <div>
+                  <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
+                    Judul Insiden
+                  </label>
+                  <p className="text-base font-semibold text-on-surface">{selectedIncident.title}</p>
+                </div>
+
+                {/* Target & Severity */}
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
+                      Target/Lokasi
+                    </label>
+                    <p className="text-sm font-mono bg-surface-container-low px-3 py-2 rounded-lg text-on-surface">
+                      {selectedIncident.target}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
+                      Tingkat Keparahan
+                    </label>
+                    <span className={getSeverityClass(selectedIncident.severity)}>
+                      {selectedIncident.severity}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Additional Info */}
+                <div className="bg-surface-container-low rounded-xl p-4 space-y-3">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-on-surface-variant">Waktu Terdeteksi</span>
+                    <span className="font-medium text-on-surface">Hari ini, 14:32 WIB</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-on-surface-variant">Ditugaskan Ke</span>
+                    <span className="font-medium text-on-surface">Tim Keamanan</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-on-surface-variant">Prioritas</span>
+                    <span className="font-bold text-error">URGENT</span>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-2">
+                    Deskripsi Lengkap
+                  </label>
+                  <div className="bg-surface-container-low rounded-lg p-4 text-sm text-on-surface leading-relaxed">
+                    <p>
+                      Terdeteksi upaya akses tidak sah ke bucket S3 <span className="font-mono font-semibold">{selectedIncident.target}</span>.
+                      Sistem keamanan telah memblokir akses dan mencatat IP address pelaku.
+                    </p>
+                    <p className="mt-3">
+                      <strong>Tindakan yang diambil:</strong> Akses diblokir, notifikasi dikirim ke tim keamanan,
+                      dan log forensik telah disimpan untuk investigasi lebih lanjut.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="pt-4 flex gap-3 border-t border-outline-variant">
+                  <button
+                    className="flex-1 py-2.5 border border-outline-variant rounded-lg text-sm font-bold text-on-surface-variant hover:bg-surface-container-low transition-all"
+                    onClick={() => setShowDetailModal(false)}
+                  >
+                    Tutup
+                  </button>
+                  <button
+                    className="flex-1 py-2.5 bg-navy-custom text-on-primary rounded-lg text-sm font-bold hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                    onClick={() => {
+                      setShowDetailModal(false);
+                      setShowModal(true);
+                    }}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">edit</span>
+                    Edit Insiden
+                  </button>
+                </div>
               </div>
             </div>
           </div>
