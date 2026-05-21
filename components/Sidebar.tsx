@@ -8,7 +8,6 @@ const menuItems = [
   { icon: "list_alt", label: "Log Insiden", href: "/incidents" },
   { icon: "history_edu", label: "Log Audit", href: "/audit-logs" },
   { icon: "notification_important", label: "Peringatan & Anomali", href: "/alerts" },
-  { icon: "analytics", label: "Analitik", href: "/analytics" },
   { icon: "settings", label: "Pengaturan", href: "/settings" },
 ];
 
