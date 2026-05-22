@@ -136,7 +136,7 @@ export default function SettingsPage() {
                   Pengaturan Sistem
                 </h2>
                 <p className="text-on-surface-variant font-body-sm">
-                  Konfigurasi protokol keamanan, izin pengguna, dan preferensi global.
+                  Pengaturan Manajemen Pengguna
                 </p>
               </div>
             </header>
