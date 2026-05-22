@@ -151,11 +151,9 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex flex-col items-center text-center">
                     <div className="relative group cursor-pointer mb-4">
-                      <img
-                        alt="Alex Rivera"
-                        className="w-24 h-24 rounded-full border-2 border-surface shadow-md"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxPXYVLEQ_bzIwancVk_5_qQtWF0Xz9KobSJ95oTbqiQpUHKGg3oQ5jEkg9yehhifA_IUlmwtEHI1nmhsLv5-8W5nf-Nen31l_b7jrQhUSED36Bi8mddO8zdxewhKgI6YVEavKPD0u2853iOPbQ6pcINd6P7DEBIQDtP-rvftpKdP_H0FkAnEE6NUCqW0Qj4Ko03rEUH3iO8Wl7jDuPXNMvchmzAruVafZkID7PKPvpzj0_AgEQ-sDU25F9F_XIgctzw0ClhflIWLQ"
-                      />
+                      <div className="w-24 h-24 rounded-full bg-primary-fixed flex items-center justify-center border-2 border-surface shadow-md">
+                        <span className="text-primary font-bold text-[22px]">AR</span>
+                      </div>
                     </div>
                     <h4 className="font-bold text-primary">Alex Rivera</h4>
                     <p className="text-xs text-on-surface-variant mb-4">

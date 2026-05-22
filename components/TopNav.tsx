@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 
 export default function TopNav() {
   return (
@@ -30,13 +29,9 @@ export default function TopNav() {
               LEAD KEPATUHAN
             </p>
           </div>
-          <Image
-            alt="User Avatar"
-            className="w-10 h-10 rounded-full border border-outline-variant object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXl00wM7eRPRcE4kXni-FYdc1V7K3-LIbsNYAVcIImlSxrIqKeDPf1YauuTnsQJ4YsXVCYOU9lotR6Pe-BDJ2umdrKs1HFNCf_AcjSzHoibx8OUSYIklwk5t7zCNt9_nUsQ7IKrifzZ6rkr5L21WgHW9QxuiMmer23eKEARB0jwod9cHO_ONlpVjvzGyGtBSN9Kc9pjJvbf2W4QbJDkJjAYQPlFuxcOAMGmjWaX1JHk4hGrvGqaXDcDyTY3pfncrVOQavoJGMku7as"
-            width={40}
-            height={40}
-          />
+          <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center border border-outline-variant">
+            <span className="text-primary font-bold text-[13px]">AR</span>
+          </div>
         </Link>
         </div>
       </div>

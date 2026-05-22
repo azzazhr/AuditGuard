@@ -84,14 +84,9 @@ export default function ProfilePage() {
             <section className="bg-white/80 backdrop-blur-xl border border-outline-variant rounded-xl p-8 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 shadow-sm">
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary-fixed/30 rounded-full blur-3xl -z-10"></div>
               <div className="relative">
-                <img
-                  className="w-32 h-32 rounded-2xl object-cover border-4 border-white shadow-lg"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg0f86HzuYEwmjM-QPHFY51BIXNVyVnf99ckwXEqlvFW_XUKylG2GgzqUTN0_QsN8aM_rB1olE5DylfyChIMKy9oeBMDxAkUi6LY2el_YDRSgc58PXUkGvLum_Y8I59EAlZPXgLskrgbsXMJgcRFmnGloC4PMmBQ09-_VuK71L9Sy7frxNisuzhJ_49Z9oS_sKHL3n5JL2upaQ4qKuVfkRlSHBXUDrdNtfpGmGqB4EuvOrtPFbokXFOyeCLkhmhRYh1KjOPEL3bR9z"
-                  alt="Alex Rivera"
-                />
-                <button className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-lg shadow-md hover:scale-110 transition-transform">
-                  <span className="material-symbols-outlined text-[20px]">photo_camera</span>
-                </button>
+                <div className="w-32 h-32 rounded-2xl bg-primary-fixed flex items-center justify-center border-4 border-white shadow-lg">
+                  <span className="text-primary font-bold text-[32px]">AR</span>
+                </div>
               </div>
               <div className="text-center md:text-left flex-1">
                 <h2 className="text-[36px] font-bold text-primary leading-tight">{data.name}</h2>
