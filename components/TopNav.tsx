@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 
 export default function TopNav() {
@@ -22,6 +23,7 @@ export default function TopNav() {
         <div className="h-8 w-[1px] bg-outline-variant mx-2"></div>
 
         <div className="flex items-center gap-3">
+        <Link href="/profile" className="flex items-center gap-3 hover:opacity-80 transition-opacity cursor-pointer">
           <div className="text-right hidden lg:block">
             <p className="text-body-sm font-bold text-navy-custom">Alex Rivera</p>
             <p className="text-[10px] text-on-surface-variant font-medium">
@@ -35,6 +37,7 @@ export default function TopNav() {
             width={40}
             height={40}
           />
+        </Link>
         </div>
       </div>
     </header>
