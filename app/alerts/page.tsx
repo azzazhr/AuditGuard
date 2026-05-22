@@ -2,7 +2,7 @@
 
 import Sidebar from '@/components/Sidebar';
 import TopNav from '@/components/TopNav';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Alert {
   id: string;
@@ -22,48 +22,29 @@ interface Anomaly {
 }
 
 export default function AlertsPage() {
-  const [alerts] = useState<Alert[]>([
-    {
-      id: '1',
-      severity: 'kritis',
-      title: 'Upaya Brute Force',
-      description: '50+ login gagal dari IP 45.12.33.1',
-      time: '2 mnt lalu'
-    },
-    {
-      id: '2',
-      severity: 'peringatan',
-      title: 'Volume API Tidak Biasa',
-      description: 'Lonjakan trafik pada /api/v2/financial-records',
-      time: '14 mnt lalu'
-    },
-    {
-      id: '3',
-      severity: 'minor',
-      title: 'Perubahan Konfigurasi',
-      description: 'Security group diubah oleh User-882',
-      time: '45 mnt lalu'
-    }
-  ]);
-
+  const [alerts, setAlerts] = useState<Alert[]>([]);
   const [anomalies] = useState<Anomaly[]>([
-    {
-      id: '1',
-      time: '15:02:11',
-      type: 'Login Burst',
-      entity: 'Auth Gateway v2',
-      confidence: 98,
-      status: 'aktif'
-    },
-    {
-      id: '2',
-      time: '14:58:02',
-      type: 'Geo-Impossible',
-      entity: 'User: k_thompson',
-      confidence: 72,
-      status: 'tertunda'
-    }
+    { id: '1', time: '15:02:11', type: 'Login Burst', entity: 'Auth Gateway v2', confidence: 98, status: 'aktif' },
+    { id: '2', time: '14:58:02', type: 'Geo-Impossible', entity: 'User: k_thompson', confidence: 72, status: 'aktif' },
   ]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/alerts')
+      .then(r => r.json())
+      .then(data => {
+        if (data.alerts) {
+          setAlerts(data.alerts.map((a: any) => ({
+            id: a.id,
+            severity: a.severity,
+            title: a.title,
+            description: a.description,
+            time: new Date(a.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
+          })));
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const [timeFilter, setTimeFilter] = useState<'1H' | '24H'>('1H');
 

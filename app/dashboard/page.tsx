@@ -3,7 +3,7 @@
 import Sidebar from "@/components/Sidebar";
 import Toast from "@/components/Toast";
 import TopNav from "@/components/TopNav";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Incident {
   id: string;
@@ -20,23 +20,38 @@ export default function DashboardPage() {
   const [deleteId, setDeleteId] = useState("");
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" as "success" | "error" });
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [totalIncidents, setTotalIncidents] = useState(0);
+  const [totalAlerts, setTotalAlerts] = useState(0);
+  const [criticalAlerts, setCriticalAlerts] = useState(0);
 
-  const incidents: Incident[] = [
-    {
-      id: "#INC-9482",
-      title: "Akses S3 Tidak Sah",
-      target: "bucket-finance-prod",
-      severity: "kritis",
-      status: "Terbuka",
-    },
-    {
-      id: "#INC-9481",
-      title: "Reset Password Massal",
-      target: "IAM-Controller",
-      severity: "tinggi",
-      status: "Investigasi",
-    },
-  ];
+  useEffect(() => {
+    // Fetch incidents
+    fetch('/api/incidents')
+      .then(r => r.json())
+      .then(data => {
+        if (data.incidents) {
+          setTotalIncidents(data.incidents.length);
+          setIncidents(data.incidents.slice(0, 2).map((inc: any) => ({
+            id: `#INC-${inc.id.slice(0, 4).toUpperCase()}`,
+            title: inc.title,
+            target: inc.target || '-',
+            severity: inc.severity,
+            status: inc.status === 'terbuka' ? 'Terbuka' : inc.status === 'dalam-proses' ? 'Investigasi' : 'Selesai',
+          })));
+        }
+      });
+
+    // Fetch alerts
+    fetch('/api/alerts')
+      .then(r => r.json())
+      .then(data => {
+        if (data.alerts) {
+          setTotalAlerts(data.alerts.length);
+          setCriticalAlerts(data.alerts.filter((a: any) => a.severity === 'kritis').length);
+        }
+      });
+  }, []);
 
   const handleDelete = () => {
     setShowDeleteModal(false);
@@ -112,7 +127,7 @@ export default function DashboardPage() {
               <p className="text-on-surface-variant/60 font-medium text-[11px] mb-1 uppercase tracking-wider">
                 Insiden Total
               </p>
-              <h3 className="font-display-lg text-[32px] text-navy-custom">1,284</h3>
+              <h3 className="font-display-lg text-[32px] text-navy-custom">{totalIncidents.toLocaleString('id-ID')}</h3>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
@@ -121,13 +136,13 @@ export default function DashboardPage() {
                   <span className="material-symbols-outlined">warning</span>
                 </div>
                 <span className="bg-error text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">
-                  5 Kritis
+                  {criticalAlerts} Kritis
                 </span>
               </div>
               <p className="text-on-surface-variant/60 font-medium text-[11px] mb-1 uppercase tracking-wider">
                 Alert Aktif
               </p>
-              <h3 className="font-display-lg text-[32px] text-navy-custom">42</h3>
+              <h3 className="font-display-lg text-[32px] text-navy-custom">{totalAlerts}</h3>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">

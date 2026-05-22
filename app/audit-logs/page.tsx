@@ -2,7 +2,7 @@
 
 import Sidebar from '@/components/Sidebar';
 import TopNav from '@/components/TopNav';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AuditLog {
   id: string;
@@ -15,40 +15,26 @@ interface AuditLog {
 
 export default function AuditLogsPage() {
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
-  const [auditLogs] = useState<AuditLog[]>([
-    {
-      id: '1',
-      userId: 'admin_user',
-      action: 'Perbarui Aturan Firewall',
-      time: '10:15',
-      ipAddress: '192.168.1.1',
-      status: 'berhasil'
-    },
-    {
-      id: '2',
-      userId: 'operator_2',
-      action: 'Lihat Insiden #9021',
-      time: '10:10',
-      ipAddress: '192.168.1.5',
-      status: 'berhasil'
-    },
-    {
-      id: '3',
-      userId: 'guest_acc',
-      action: 'Gagal Login',
-      time: '09:45',
-      ipAddress: '45.12.33.1',
-      status: 'peringatan'
-    },
-    {
-      id: '4',
-      userId: 'manager_01',
-      action: 'Logout Sistem',
-      time: '09:30',
-      ipAddress: '192.168.1.12',
-      status: 'berhasil'
-    }
-  ]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/audit-logs')
+      .then(r => r.json())
+      .then(data => {
+        if (data.logs) {
+          setAuditLogs(data.logs.map((log: any) => ({
+            id: log.id,
+            userId: log.user_id,
+            action: log.action,
+            time: new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+            ipAddress: log.ip_address,
+            status: log.status,
+          })));
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleRowClick = (log: AuditLog) => {
     setSelectedLog(log);
@@ -240,7 +226,7 @@ export default function AuditLogsPage() {
 
                   <div className="px-6 py-4 border-t border-outline-variant mt-auto flex justify-between items-center bg-surface-container-lowest">
                     <span className="text-[12px] text-on-surface-variant">
-                      Menampilkan 1-{auditLogs.length} dari 1.240 entri
+                      Menampilkan 1-{auditLogs.length} dari {auditLogs.length} entri
                     </span>
                     <div className="flex gap-1">
                       <button

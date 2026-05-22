@@ -3,7 +3,7 @@
 import Sidebar from '@/components/Sidebar';
 import Toast from '@/components/Toast';
 import TopNav from '@/components/TopNav';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 
 interface Incident {
   id: string;
@@ -17,38 +17,28 @@ interface Incident {
 }
 
 export default function IncidentsPage() {
-  const [incidents, setIncidents] = useState<Incident[]>([
-    {
-      id: 'INC-9021',
-      title: 'Percobaan SQL Injection',
-      description: 'Target: DB Cluster-04',
-      severity: 'kritis',
-      status: 'terbuka',
-      target: 'DB Cluster-04',
-      assignedTo: 'Tim Keamanan',
-      detectedAt: '2 mnt lalu'
-    },
-    {
-      id: 'INC-8954',
-      title: 'CPU Server Tinggi',
-      description: 'Host: aws-prod-compute-12',
-      severity: 'sedang',
-      status: 'dalam-proses',
-      target: 'aws-prod-compute-12',
-      assignedTo: 'DevOps',
-      detectedAt: '1 jam lalu'
-    },
-    {
-      id: 'INC-8942',
-      title: 'Kegagalan Backup DB',
-      description: 'Bucket: archive-logs',
-      severity: 'tinggi',
-      status: 'selesai',
-      target: 'archive-logs',
-      assignedTo: 'Admin DB',
-      detectedAt: '3 jam lalu'
-    }
-  ]);
+  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/incidents')
+      .then(r => r.json())
+      .then(data => {
+        if (data.incidents) {
+          setIncidents(data.incidents.map((inc: any) => ({
+            id: inc.id,
+            title: inc.title,
+            description: inc.description || '',
+            severity: inc.severity,
+            status: inc.status,
+            target: inc.target || '',
+            assignedTo: inc.assigned_to || '',
+            detectedAt: new Date(inc.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
+          })));
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -100,31 +90,41 @@ export default function IncidentsPage() {
     setCurrentIncident(null);
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
     if (modalMode === 'create') {
-      const newIncident: Incident = {
-        id: `INC-${Math.floor(Math.random() * 10000)}`,
-        title: formData.title,
-        description: formData.description,
-        severity: formData.severity,
-        status: 'terbuka',
-        target: formData.target,
-        assignedTo: formData.assignedTo,
-        detectedAt: 'Baru saja'
-      };
-      setIncidents([newIncident, ...incidents]);
-      displayToast('Insiden baru berhasil dibuat!', 'success');
+      const res = await fetch('/api/incidents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          severity: formData.severity,
+          status: 'terbuka',
+          target: formData.target,
+          assigned_to: formData.assignedTo,
+        }),
+      });
+      const data = await res.json();
+      if (data.incident) {
+        setIncidents([{
+          id: data.incident.id,
+          title: data.incident.title,
+          description: data.incident.description || '',
+          severity: data.incident.severity,
+          status: data.incident.status,
+          target: data.incident.target || '',
+          assignedTo: data.incident.assigned_to || '',
+          detectedAt: 'Baru saja',
+        }, ...incidents]);
+        displayToast('Insiden baru berhasil dibuat!', 'success');
+      }
     } else if (modalMode === 'edit' && currentIncident) {
-      setIncidents(incidents.map(inc => 
-        inc.id === currentIncident.id 
-          ? { ...inc, ...formData }
-          : inc
+      setIncidents(incidents.map(inc =>
+        inc.id === currentIncident.id ? { ...inc, ...formData } : inc
       ));
       displayToast('Insiden berhasil diperbarui!', 'success');
     }
-    
     closeModal();
   };
 
@@ -133,10 +133,15 @@ export default function IncidentsPage() {
     setShowDeleteModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    await fetch('/api/incidents', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: deleteId }),
+    });
     setIncidents(incidents.filter(inc => inc.id !== deleteId));
     setShowDeleteModal(false);
-    displayToast(`Insiden ${deleteId} telah dihapus.`, 'success');
+    displayToast('Insiden berhasil dihapus.', 'success');
   };
 
   const displayToast = (message: string, type: 'success' | 'error') => {
