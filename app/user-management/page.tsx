@@ -133,7 +133,7 @@ export default function SettingsPage() {
             <header className="mb-8 flex justify-between items-end">
               <div>
                 <h2 className="font-headline-md text-headline-md text-primary">
-                  Pengaturan Sistem
+                  Manajemen Pengguna
                 </h2>
                 <p className="text-on-surface-variant font-body-sm">
                   Pengaturan Manajemen Pengguna
