@@ -3,7 +3,8 @@
 import Sidebar from '@/components/Sidebar';
 import Toast from '@/components/Toast';
 import TopNav from '@/components/TopNav';
-import { FormEvent, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { FormEvent, useEffect, useState } from 'react';
 
 interface User {
   id: string;
@@ -15,24 +16,44 @@ interface User {
 }
 
 export default function SettingsPage() {
-  const [users, setUsers] = useState<User[]>([
-    {
-      id: '1',
-      name: 'Alex Rivera',
-      email: 'alex@auditguard.com',
-      role: 'ADMIN UTAMA',
-      status: 'aktif',
-      initials: 'AR'
-    },
-    {
-      id: '2',
-      name: 'Sarah Bakri',
-      email: 'sarah.b@auditguard.com',
-      role: 'AUDITOR',
-      status: 'aktif',
-      initials: 'SB'
-    }
-  ]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUserName, setCurrentUserName] = useState('');
+  const [currentUserInitials, setCurrentUserInitials] = useState('');
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
+  // Fetch logged-in user profile
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Pengguna';
+        setCurrentUserName(name);
+        const parts = name.trim().split(' ');
+        const ini = parts.length >= 2
+          ? (parts[0][0] + parts[1][0]).toUpperCase()
+          : name.slice(0, 2).toUpperCase();
+        setCurrentUserInitials(ini);
+      }
+    };
+    fetchCurrentUser();
+  }, []);
+
+  // Fetch all users from API route
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/users');
+        const data = await res.json();
+        if (data.users) setUsers(data.users);
+      } catch (e) {
+        console.error('Gagal memuat users:', e);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const [showUserModal, setShowUserModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -152,10 +173,10 @@ export default function SettingsPage() {
                   <div className="flex flex-col items-center text-center">
                     <div className="relative group cursor-pointer mb-4">
                       <div className="w-24 h-24 rounded-full bg-primary-fixed flex items-center justify-center border-2 border-surface shadow-md">
-                        <span className="text-primary font-bold text-[22px]">AR</span>
+                        <span className="text-primary font-bold text-[22px]">{currentUserInitials || '...'}</span>
                       </div>
                     </div>
-                    <h4 className="font-bold text-primary">Alex Rivera</h4>
+                    <h4 className="font-bold text-primary">{currentUserName || 'Memuat...'}</h4>
                     <p className="text-xs text-on-surface-variant mb-4">
                       Ketua Kepatuhan • AuditGuard HQ
                     </p>
@@ -197,7 +218,20 @@ export default function SettingsPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-outline-variant/10">
-                        {users.map((user) => (
+                        {loadingUsers ? (
+                          <tr>
+                            <td colSpan={4} className="px-6 py-8 text-center text-on-surface-variant text-sm">
+                              Memuat data pengguna...
+                            </td>
+                          </tr>
+                        ) : users.length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="px-6 py-8 text-center text-on-surface-variant text-sm">
+                              Belum ada pengguna terdaftar.
+                            </td>
+                          </tr>
+                        ) : (
+                          users.map((user) => (
                           <tr key={user.id} className="hover:bg-surface-container/30 transition-colors">
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
@@ -249,7 +283,8 @@ export default function SettingsPage() {
                               </div>
                             </td>
                           </tr>
-                        ))}
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
