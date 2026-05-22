@@ -73,10 +73,8 @@ export default function LoginPage() {
 
         {/* Description */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-black mb-2">
-            Platform monitoring kepatuhan perusahaan untuk audit sistem,
-          </h2>
           <p className="text-2xl font-semibold text-black">
+            Platform monitoring kepatuhan perusahaan untuk audit sistem,
             pelacakan aktivitas, dan deteksi anomali secara real-time.
           </p>
         </div>
@@ -84,28 +82,71 @@ export default function LoginPage() {
         {/* Image Card */}
         <div className="flex-1 flex items-center justify-center">
           <div className="relative w-full max-w-md">
-            <div className="bg-black rounded-3xl p-8 shadow-2xl">
-              {/* Placeholder for network image */}
-              <div className="aspect-square bg-gradient-to-br from-cyan-900 to-black rounded-2xl flex items-center justify-center mb-6 relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="material-symbols-outlined text-cyan-400 text-[120px] opacity-30">
-                    hub
-                  </span>
+            {/* Dashboard Preview Card */}
+            <div className="bg-white rounded-3xl p-6 shadow-2xl border border-green-100">
+              {/* Card Header */}
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Ringkasan Sistem</p>
+                  <p className="text-base font-bold text-[#166534]">AuditGuard Dashboard</p>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                  <span className="text-[11px] text-green-600 font-semibold">Live</span>
                 </div>
               </div>
-              
-              {/* Analytics Bar */}
-              <div className="flex items-center justify-between">
-                <span className="text-white font-medium">analytics</span>
-                <div className="flex-1 mx-4 bg-gray-700 rounded-full h-1.5">
-                  <div className="bg-cyan-400 h-1.5 rounded-full" style={{ width: '98%' }}></div>
+
+              {/* Stat Cards */}
+              <div className="grid grid-cols-3 gap-3 mb-5">
+                <div className="bg-green-50 rounded-xl p-3 text-center">
+                  <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Insiden</p>
+                  <p className="text-xl font-bold text-[#166534]">7</p>
                 </div>
-                <span className="text-white text-sm font-medium">98% Aman</span>
+                <div className="bg-red-50 rounded-xl p-3 text-center">
+                  <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Alert</p>
+                  <p className="text-xl font-bold text-red-600">4</p>
+                </div>
+                <div className="bg-emerald-50 rounded-xl p-3 text-center">
+                  <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Aman</p>
+                  <p className="text-xl font-bold text-emerald-600">98%</p>
+                </div>
+              </div>
+
+              {/* Chart Bars */}
+              <div className="mb-5">
+                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Tren Aktivitas</p>
+                <div className="flex items-end gap-1.5 h-16">
+                  {[40, 65, 45, 80, 55, 90, 60, 75, 50, 85, 70, 95].map((h, i) => (
+                    <div
+                      key={i}
+                      className={`flex-1 rounded-t-sm ${i === 11 ? 'bg-[#166534]' : i % 3 === 0 ? 'bg-green-300' : 'bg-green-100'}`}
+                      style={{ height: `${h}%` }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div className="space-y-2.5">
+                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Aktivitas Terbaru</p>
+                {[
+                  { icon: 'shield_check', label: 'Firewall diperbarui', time: '10:15', color: 'text-green-600 bg-green-50' },
+                  { icon: 'warning', label: 'Gagal Login terdeteksi', time: '09:45', color: 'text-red-500 bg-red-50' },
+                  { icon: 'verified_user', label: 'Audit log diperiksa', time: '09:30', color: 'text-emerald-600 bg-emerald-50' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${item.color}`}>
+                      <span className="material-symbols-outlined text-[14px]">{item.icon}</span>
+                    </div>
+                    <p className="text-[12px] text-gray-700 flex-1 font-medium">{item.label}</p>
+                    <p className="text-[10px] text-gray-400 font-mono">{item.time}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
             {/* Badge */}
-            <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl px-4 py-2 shadow-lg">
+            <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl px-4 py-2 shadow-lg border border-green-100">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-green-600 text-[20px]">
                   verified_user
