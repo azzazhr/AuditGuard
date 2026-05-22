@@ -14,6 +14,7 @@ interface AuditLog {
 }
 
 export default function AuditLogsPage() {
+  const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [auditLogs] = useState<AuditLog[]>([
     {
       id: '1',
@@ -50,7 +51,7 @@ export default function AuditLogsPage() {
   ]);
 
   const handleRowClick = (log: AuditLog) => {
-    console.log('Membuka detail log:', log);
+    setSelectedLog(log);
   };
 
   return (
@@ -73,10 +74,6 @@ export default function AuditLogsPage() {
                 </h2>
               </div>
               <div className="flex gap-2">
-                <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded hover:bg-surface-container transition-all text-body-sm font-medium">
-                  <span className="material-symbols-outlined text-[18px]">filter_list</span>
-                  Filter
-                </button>
                 <button className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded hover:opacity-90 transition-all text-body-sm font-medium">
                   <span className="material-symbols-outlined text-[18px]">download</span>
                   Ekspor Laporan
@@ -267,6 +264,96 @@ export default function AuditLogsPage() {
           </div>
         </main>
       </div>
+
+      {/* Detail Modal */}
+      {selectedLog && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setSelectedLog(null)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+              <h3 className="font-bold text-[16px] text-primary uppercase tracking-widest text-[12px]">
+                Detail Log Audit
+              </h3>
+              <button
+                onClick={() => setSelectedLog(null)}
+                className="text-on-surface-variant hover:text-primary transition-colors"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                    ID Pengguna
+                  </p>
+                  <p className={`text-sm font-semibold ${selectedLog.status === 'peringatan' ? 'text-error' : 'text-primary'}`}>
+                    {selectedLog.userId}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                    Status
+                  </p>
+                  <span
+                    className={`text-[11px] font-bold uppercase px-2 py-1 rounded ${
+                      selectedLog.status === 'peringatan'
+                        ? 'bg-error/10 text-error'
+                        : 'bg-green-50 text-green-600'
+                    }`}
+                  >
+                    {selectedLog.status === 'peringatan' ? 'Peringatan' : 'Berhasil'}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                  Deskripsi Aksi
+                </p>
+                <p className={`text-sm ${selectedLog.status === 'peringatan' ? 'text-error font-medium' : 'text-on-surface'}`}>
+                  {selectedLog.action}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                    Waktu
+                  </p>
+                  <p className={`text-sm font-mono ${selectedLog.status === 'peringatan' ? 'text-error' : 'text-on-surface'}`}>
+                    {selectedLog.time}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">
+                    Alamat IP
+                  </p>
+                  <p className={`text-sm font-mono ${selectedLog.status === 'peringatan' ? 'text-error' : 'text-on-surface-variant'}`}>
+                    {selectedLog.ipAddress}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-outline-variant bg-surface-container-lowest flex justify-end">
+              <button
+                onClick={() => setSelectedLog(null)}
+                className="px-5 py-2 bg-primary text-on-primary rounded-lg text-sm font-bold hover:opacity-90 transition-all"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
