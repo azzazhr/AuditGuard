@@ -101,10 +101,10 @@ export default function AlertsPage() {
         <main className="pt-24 px-8 pb-12 max-w-[1440px]">
           <div className="flex justify-between items-end mb-8">
             <div>
-              <h2 className="font-headline-md text-headline-md text-primary">
+              <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">
                 Peringatan & Anomali
               </h2>
-              <p className="text-on-surface-variant">
+              <p className="text-on-surface-variant font-body-sm">
                 Deteksi otomatis terhadap aktivitas mencurigakan dan pelanggaran.
               </p>
             </div>

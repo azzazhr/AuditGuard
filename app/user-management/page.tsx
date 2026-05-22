@@ -132,7 +132,7 @@ export default function SettingsPage() {
           <div className="max-w-[1440px] mx-auto">
             <header className="mb-8 flex justify-between items-end">
               <div>
-                <h2 className="font-headline-md text-headline-md text-primary">
+                <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">
                   Manajemen Pengguna
                 </h2>
                 <p className="text-on-surface-variant font-body-sm">

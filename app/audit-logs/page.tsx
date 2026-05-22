@@ -64,12 +64,12 @@ export default function AuditLogsPage() {
             {/* Page Header */}
             <div className="flex justify-between items-center mb-10">
               <div>
-                <h2 className="font-headline-md text-headline-md text-primary">
-                  Log Audit 
+                <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">
+                  Log Audit
                 </h2>
-                <p className="text-on-surface-variant text-sm mt-1">
+                <p className="text-on-surface-variant font-body-sm">
                   Riwayat aktivitas pengguna dan perubahan data secara detail.
-              </p>
+                </p>
               </div>
               <div className="flex gap-2">
                 <button className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded hover:opacity-90 transition-all text-body-sm font-medium">

@@ -213,8 +213,8 @@ export default function IncidentsPage() {
           {/* Page Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-3xl font-bold text-primary tracking-tight">Log Insiden</h2>
-              <p className="text-on-surface-variant text-sm mt-1">
+              <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">Log Insiden</h2>
+              <p className="text-on-surface-variant font-body-sm">
                 Mencatat dan memantau seluruh insiden keamanan sistem.
               </p>
             </div>
