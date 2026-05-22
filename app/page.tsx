@@ -256,7 +256,7 @@ export default function LoginPage() {
                 isRegister ? "Mendaftarkan..." : "Masuk..."
               ) : (
                 <>
-                  {isRegister ? "Daftar Sekarang" : "Masuk ke Dashboard"}
+                  {isRegister ? "Register" : "Login"}
                   <span className="material-symbols-outlined text-[20px]">
                     arrow_forward
                   </span>
