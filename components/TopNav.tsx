@@ -19,15 +19,6 @@ export default function TopNav() {
       </div>
 
       <div className="flex items-center gap-4">
-        <button className="p-2 hover:bg-surface-container-high rounded-full transition-all text-on-surface-variant relative">
-          <span className="material-symbols-outlined">notifications</span>
-          <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
-        </button>
-
-        <button className="p-2 hover:bg-surface-container-high rounded-full transition-all text-on-surface-variant">
-          <span className="material-symbols-outlined">settings</span>
-        </button>
-
         <div className="h-8 w-[1px] bg-outline-variant mx-2"></div>
 
         <div className="flex items-center gap-3">
