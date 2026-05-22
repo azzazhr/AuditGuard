@@ -183,29 +183,6 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </section>
-
-                <section className="bg-navy-custom rounded-xl p-6 shadow-sm text-on-primary">
-                  <h3 className="font-bold mb-4 flex items-center gap-2">
-                    <span className="material-symbols-outlined">monitoring</span>
-                    Statistik Aktivitas
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-on-primary/70 text-body-sm">Log Diperiksa</span>
-                      <span className="font-bold">1,248</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-on-primary/70 text-body-sm">Laporan Dibuat</span>
-                      <span className="font-bold">42</span>
-                    </div>
-                    <div className="w-full bg-on-primary/10 h-1.5 rounded-full mt-4">
-                      <div className="bg-tertiary-fixed w-[75%] h-full rounded-full"></div>
-                    </div>
-                    <p className="text-[11px] text-on-primary/50 text-center uppercase tracking-tighter font-bold">
-                      Target Bulanan: 75% Tercapai
-                    </p>
-                  </div>
-                </section>
               </div>
             </div>
           </div>
