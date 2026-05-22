@@ -24,6 +24,8 @@ export default function DashboardPage() {
   const [totalIncidents, setTotalIncidents] = useState(0);
   const [totalAlerts, setTotalAlerts] = useState(0);
   const [criticalAlerts, setCriticalAlerts] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [recentLogs, setRecentLogs] = useState<{userId: string; action: string; time: string; ipAddress: string; status: string}[]>([]);
 
   useEffect(() => {
     // Fetch incidents
@@ -50,6 +52,28 @@ export default function DashboardPage() {
           setTotalAlerts(data.alerts.length);
           setCriticalAlerts(data.alerts.filter((a: any) => a.severity === 'kritis').length);
         }
+      });
+
+    // Fetch audit logs
+    fetch('/api/audit-logs')
+      .then(r => r.json())
+      .then(data => {
+        if (data.logs) {
+          setRecentLogs(data.logs.slice(0, 3).map((log: any) => ({
+            userId: log.user_id,
+            action: log.action,
+            time: new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+            ipAddress: log.ip_address,
+            status: log.status,
+          })));
+        }
+      });
+
+    // Fetch users count
+    fetch('/api/users')
+      .then(r => r.json())
+      .then(data => {
+        if (data.users) setTotalUsers(data.users.length);
       });
   }, []);
 
@@ -171,7 +195,7 @@ export default function DashboardPage() {
               <p className="text-on-surface-variant/60 font-medium text-[11px] mb-1 uppercase tracking-wider">
                 Pengguna Aktif
               </p>
-              <h3 className="font-display-lg text-[32px] text-navy-custom">12</h3>
+              <h3 className="font-display-lg text-[32px] text-navy-custom">{totalUsers}</h3>
             </div>
           </div>
 
@@ -380,50 +404,32 @@ export default function DashboardPage() {
                 <h4 className="font-headline-sm text-navy-custom">Log Audit Pengguna</h4>
               </div>
               <div className="flex-1 p-6 space-y-6 overflow-y-auto custom-scrollbar max-h-[380px]">
-                <div className="flex gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-surface-container-low flex-shrink-0 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[18px] text-navy-custom">person</span>
-                  </div>
-                  <div>
-                    <p className="text-sm text-on-surface">
-                      <span className="font-bold">m_chen</span> mengubah{" "}
-                      <span className="font-label-mono text-[11px] bg-surface-container-low px-1.5 py-0.5 rounded">
-                        IAM_Policy_Admin
-                      </span>
-                    </p>
-                    <p className="text-[10px] text-on-surface-variant/50 mt-1.5 uppercase font-medium">
-                      HARI INI 10:42 • 192.168.1.44
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-success-neon/10 flex-shrink-0 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[18px] text-navy-custom">login</span>
-                  </div>
-                  <div>
-                    <p className="text-sm text-on-surface">
-                      <span className="font-bold">j_doe</span> login berhasil dari perangkat baru
-                    </p>
-                    <p className="text-[10px] text-on-surface-variant/50 mt-1.5 uppercase font-medium">
-                      HARI INI 09:15 • SAN FRANCISCO, US
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-error/10 flex-shrink-0 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[18px] text-error">lock</span>
-                  </div>
-                  <div>
-                    <p className="text-sm text-on-surface">
-                      <span className="font-bold">Sistem</span> memblokir 4 upaya koneksi
-                    </p>
-                    <p className="text-[10px] text-on-surface-variant/50 mt-1.5 uppercase font-medium">
-                      KEMARIN 23:58 • EU-WEST-1
-                    </p>
-                  </div>
-                </div>
+                {recentLogs.length === 0 ? (
+                  <p className="text-sm text-on-surface-variant">Memuat log...</p>
+                ) : (
+                  recentLogs.map((log, idx) => (
+                    <div key={idx} className="flex gap-4">
+                      <div className={`w-9 h-9 rounded-lg flex-shrink-0 flex items-center justify-center ${
+                        log.status === 'peringatan' ? 'bg-error/10' : 'bg-surface-container-low'
+                      }`}>
+                        <span className={`material-symbols-outlined text-[18px] ${
+                          log.status === 'peringatan' ? 'text-error' : 'text-navy-custom'
+                        }`}>
+                          {log.status === 'peringatan' ? 'lock' : 'person'}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-sm text-on-surface">
+                          <span className="font-bold">{log.userId}</span>{' '}
+                          {log.action.toLowerCase()}
+                        </p>
+                        <p className="text-[10px] text-on-surface-variant/50 mt-1.5 uppercase font-medium">
+                          HARI INI {log.time} • {log.ipAddress}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
