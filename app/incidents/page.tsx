@@ -215,7 +215,7 @@ export default function IncidentsPage() {
             <div>
               <h2 className="text-3xl font-bold text-primary tracking-tight">Log Insiden</h2>
               <p className="text-on-surface-variant text-sm mt-1">
-                Pantau peristiwa keamanan jaringan secara real-time.
+                Mencatat dan memantau seluruh insiden keamanan sistem.
               </p>
             </div>
             <div className="flex gap-3">

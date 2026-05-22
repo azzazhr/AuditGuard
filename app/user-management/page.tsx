@@ -136,7 +136,7 @@ export default function SettingsPage() {
                   Manajemen Pengguna
                 </h2>
                 <p className="text-on-surface-variant font-body-sm">
-                  Pengaturan Manajemen Pengguna
+                  Mengelola akun pengguna, akses, dan hak izin sistem.
                 </p>
               </div>
             </header>

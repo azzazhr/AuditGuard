@@ -105,7 +105,7 @@ export default function AlertsPage() {
                 Peringatan & Anomali
               </h2>
               <p className="text-on-surface-variant">
-                Pemantauan real-time perilaku sistem dan pengecualian keamanan.
+                Deteksi otomatis terhadap aktivitas mencurigakan dan pelanggaran.
               </p>
             </div>
             <div className="flex gap-3">
