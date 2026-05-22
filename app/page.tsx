@@ -53,12 +53,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e8edf2] flex">
+    <div className="min-h-screen bg-[#f0fdf4] flex">
       {/* Left Side - Image and Description */}
       <div className="hidden lg:flex lg:w-1/2 flex-col p-12">
         {/* Logo */}
         <div className="flex items-center gap-3 mb-12">
-          <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-[#166534] rounded-xl flex items-center justify-center">
             <span className="material-symbols-outlined text-white text-[24px]">
               shield
             </span>
@@ -296,7 +296,7 @@ export default function LoginPage() {
 
             {/* Submit Button */}
             <button
-              className="w-full bg-black text-white py-3.5 rounded-lg font-semibold text-[15px] hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-[#166534] text-white py-3.5 rounded-lg font-semibold text-[15px] hover:bg-[#14532d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               disabled={isLoading}
               type="submit"
             >
