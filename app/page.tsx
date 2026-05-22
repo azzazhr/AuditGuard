@@ -73,7 +73,7 @@ export default function LoginPage() {
 
         {/* Description */}
         <div className="mb-8">
-          <p className="text-2xl font-semibold text-black">
+          <p className="text-base font-medium text-black">
             Platform monitoring kepatuhan perusahaan untuk audit sistem,
             pelacakan aktivitas, dan deteksi anomali secara real-time.
           </p>
@@ -130,9 +130,9 @@ export default function LoginPage() {
               <div className="space-y-2.5">
                 <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Aktivitas Terbaru</p>
                 {[
-                  { icon: 'shield_check', label: 'Firewall diperbarui', time: '10:15', color: 'text-green-600 bg-green-50' },
+                  { icon: 'verified_user', label: 'Firewall diperbarui', time: '10:15', color: 'text-green-600 bg-green-50' },
                   { icon: 'warning', label: 'Gagal Login terdeteksi', time: '09:45', color: 'text-red-500 bg-red-50' },
-                  { icon: 'verified_user', label: 'Audit log diperiksa', time: '09:30', color: 'text-emerald-600 bg-emerald-50' },
+                  { icon: 'fact_check', label: 'Audit log diperiksa', time: '09:30', color: 'text-emerald-600 bg-emerald-50' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${item.color}`}>
