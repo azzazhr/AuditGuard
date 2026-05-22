@@ -4,31 +4,62 @@ import Sidebar from '@/components/Sidebar';
 import TopNav from '@/components/TopNav';
 import { useState } from 'react';
 
-export default function ProfilePage() {
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [toast, setToast] = useState({ show: false, message: '', type: 'success' as 'success' | 'error' });
+type FieldKey = 'name' | 'email' | 'department' | 'employeeId';
 
-  const [formData, setFormData] = useState({
+interface Field {
+  key: FieldKey;
+  label: string;
+  type?: string;
+  options?: string[];
+}
+
+const fields: Field[] = [
+  { key: 'name', label: 'Nama Lengkap', type: 'text' },
+  { key: 'email', label: 'Email Kantor', type: 'email' },
+  {
+    key: 'department',
+    label: 'Departemen',
+    options: ['Kepatuhan & Audit Internal', 'Manajemen Risiko', 'Teknologi Informasi', 'Sumber Daya Manusia'],
+  },
+  { key: 'employeeId', label: 'ID Karyawan', type: 'text' },
+];
+
+export default function ProfilePage() {
+  const [data, setData] = useState<Record<FieldKey, string>>({
     name: 'Alex Rivera',
     email: 'alex.rivera@auditguard.com',
     department: 'Kepatuhan & Audit Internal',
+    employeeId: 'AG-982110-XR',
   });
+
+  const [editField, setEditField] = useState<Field | null>(null);
+  const [editValue, setEditValue] = useState('');
+  const [deleteField, setDeleteField] = useState<Field | null>(null);
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' as 'success' | 'error' });
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
   };
 
+  const openEdit = (field: Field) => {
+    setEditField(field);
+    setEditValue(data[field.key]);
+  };
+
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowEditModal(false);
-    setTimeout(() => showToast('Informasi diperbarui'), 400);
+    if (!editField) return;
+    setData({ ...data, [editField.key]: editValue });
+    setEditField(null);
+    setTimeout(() => showToast(`${editField.label} berhasil diperbarui`), 300);
   };
 
   const handleDelete = () => {
-    setShowDeleteModal(false);
-    setTimeout(() => showToast('Data dihapus', 'error'), 400);
+    if (!deleteField) return;
+    setData({ ...data, [deleteField.key]: '-' });
+    setDeleteField(null);
+    setTimeout(() => showToast(`${deleteField.label} dihapus`, 'error'), 300);
   };
 
   return (
@@ -40,27 +71,19 @@ export default function ProfilePage() {
           <div className="max-w-[1440px] mx-auto space-y-8">
 
             {/* Page Header */}
-            <div className="flex justify-between items-end mb-8">
-              <div>
-                <nav className="flex text-[12px] text-on-surface-variant mb-1 gap-2 uppercase tracking-wider font-medium">
-                  <span>Utama</span>
-                  <span className="opacity-30">/</span>
-                  <span className="text-primary">Profil Pengguna</span>
-                </nav>
-                <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">
-                  Profil Pengguna
-                </h2>
-                <p className="text-on-surface-variant font-body-sm">
-                  Kelola informasi pribadi dan keamanan akun Anda.
-                </p>
-              </div>
+            <div className="mb-8">
+              <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">
+                Profil Pengguna
+              </h2>
+              <p className="text-on-surface-variant font-body-sm">
+                Kelola informasi pribadi dan keamanan akun Anda.
+              </p>
             </div>
 
-            {/* Profile Header */}
+            {/* Profile Header Card */}
             <section className="bg-white/80 backdrop-blur-xl border border-outline-variant rounded-xl p-8 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 shadow-sm">
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary-fixed/30 rounded-full blur-3xl -z-10"></div>
-
-              <div className="relative group">
+              <div className="relative">
                 <img
                   className="w-32 h-32 rounded-2xl object-cover border-4 border-white shadow-lg"
                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg0f86HzuYEwmjM-QPHFY51BIXNVyVnf99ckwXEqlvFW_XUKylG2GgzqUTN0_QsN8aM_rB1olE5DylfyChIMKy9oeBMDxAkUi6LY2el_YDRSgc58PXUkGvLum_Y8I59EAlZPXgLskrgbsXMJgcRFmnGloC4PMmBQ09-_VuK71L9Sy7frxNisuzhJ_49Z9oS_sKHL3n5JL2upaQ4qKuVfkRlSHBXUDrdNtfpGmGqB4EuvOrtPFbokXFOyeCLkhmhRYh1KjOPEL3bR9z"
@@ -70,9 +93,8 @@ export default function ProfilePage() {
                   <span className="material-symbols-outlined text-[20px]">photo_camera</span>
                 </button>
               </div>
-
               <div className="text-center md:text-left flex-1">
-                <h2 className="text-[36px] font-bold text-primary leading-tight">{formData.name}</h2>
+                <h2 className="text-[36px] font-bold text-primary leading-tight">{data.name}</h2>
                 <p className="text-on-surface-variant font-medium text-[20px] mt-1">Ketua Kepatuhan</p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
                   <span className="px-3 py-1 bg-primary-fixed text-on-primary-fixed rounded-full text-[12px] font-bold flex items-center gap-1">
@@ -85,49 +107,38 @@ export default function ProfilePage() {
                   </span>
                 </div>
               </div>
-
-              <button
-                onClick={() => setShowEditModal(true)}
-                className="px-6 py-2.5 bg-primary text-on-primary rounded-lg font-bold flex items-center gap-2 hover:shadow-lg transition-all active:scale-95"
-              >
-                <span className="material-symbols-outlined text-[18px]">edit</span>
-                Ubah Profil
-              </button>
             </section>
 
             {/* Bento Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
               {/* Informasi Pribadi */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2">
                 <section className="bg-white/80 backdrop-blur-xl border border-outline-variant rounded-xl overflow-hidden shadow-sm">
                   <div className="bg-surface-container-low px-6 py-4 border-b border-outline-variant">
                     <h3 className="font-bold text-[20px] text-primary">Informasi Pribadi</h3>
                   </div>
                   <div className="p-6 divide-y divide-outline-variant/30">
-                    {[
-                      { label: 'Nama Lengkap', value: formData.name },
-                      { label: 'Email Kantor', value: formData.email },
-                      { label: 'Departemen', value: formData.department },
-                      { label: 'ID Karyawan', value: 'AG-982110-XR' },
-                    ].map((row) => (
-                      <div key={row.label} className="py-4 flex items-center justify-between group">
+                    {fields.map((field) => (
+                      <div key={field.key} className="py-4 flex items-center justify-between group">
                         <div className="space-y-1">
                           <p className="text-on-surface-variant text-[11px] uppercase tracking-wider font-bold font-mono">
-                            {row.label}
+                            {field.label}
                           </p>
-                          <p className="text-primary font-medium text-[16px]">{row.value}</p>
+                          <p className="text-primary font-medium text-[16px]">{data[field.key]}</p>
                         </div>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
-                            onClick={() => setShowEditModal(true)}
+                            onClick={() => openEdit(field)}
                             className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all"
+                            title={`Edit ${field.label}`}
                           >
                             <span className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
                           <button
-                            onClick={() => setShowDeleteModal(true)}
-                            className="p-2 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition-all"
+                            onClick={() => setDeleteField(field)}
+                            className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all"
+                            title={`Hapus ${field.label}`}
                           >
                             <span className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
@@ -189,53 +200,46 @@ export default function ProfilePage() {
         </main>
       </div>
 
-      {/* Edit Modal */}
-      {showEditModal && (
+      {/* Edit Modal — per field */}
+      {editField && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowEditModal(false)} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setEditField(null)} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
             <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
-              <h3 className="font-bold text-[18px] text-primary">Ubah Informasi Profil</h3>
-              <button onClick={() => setShowEditModal(false)} className="text-on-surface-variant hover:text-primary transition-colors">
+              <h3 className="font-bold text-[18px] text-primary">Edit {editField.label}</h3>
+              <button onClick={() => setEditField(null)} className="text-on-surface-variant hover:text-primary transition-colors">
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
             <form onSubmit={handleUpdate} className="p-6 space-y-4">
               <div className="space-y-1">
-                <label className="text-[11px] uppercase font-bold text-on-surface-variant tracking-wider">Nama Lengkap</label>
-                <input
-                  className="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 outline-none text-sm"
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
+                <label className="text-[11px] uppercase font-bold text-on-surface-variant tracking-wider">
+                  {editField.label}
+                </label>
+                {editField.options ? (
+                  <select
+                    className="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 outline-none text-sm"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                  >
+                    {editField.options.map((opt) => (
+                      <option key={opt}>{opt}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    className="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 outline-none text-sm"
+                    type={editField.type || 'text'}
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    required
+                  />
+                )}
               </div>
-              <div className="space-y-1">
-                <label className="text-[11px] uppercase font-bold text-on-surface-variant tracking-wider">Email</label>
-                <input
-                  className="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 outline-none text-sm"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[11px] uppercase font-bold text-on-surface-variant tracking-wider">Departemen</label>
-                <select
-                  className="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 outline-none text-sm"
-                  value={formData.department}
-                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                >
-                  <option>Kepatuhan &amp; Audit Internal</option>
-                  <option>Manajemen Risiko</option>
-                  <option>Teknologi Informasi</option>
-                  <option>Sumber Daya Manusia</option>
-                </select>
-              </div>
-              <div className="pt-4 flex gap-3">
+              <div className="pt-2 flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowEditModal(false)}
+                  onClick={() => setEditField(null)}
                   className="flex-1 py-2 text-on-surface-variant font-bold border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all"
                 >
                   Batal
@@ -244,7 +248,7 @@ export default function ProfilePage() {
                   type="submit"
                   className="flex-1 py-2 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 transition-all"
                 >
-                  Simpan Perubahan
+                  Simpan
                 </button>
               </div>
             </form>
@@ -252,21 +256,21 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Delete Modal */}
-      {showDeleteModal && (
+      {/* Delete Modal — per field */}
+      {deleteField && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowDeleteModal(false)} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteField(null)} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-8 text-center">
             <div className="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="material-symbols-outlined text-[32px]">warning</span>
             </div>
-            <h3 className="font-bold text-[18px] text-primary mb-2">Hapus Informasi?</h3>
+            <h3 className="font-bold text-[18px] text-primary mb-2">Hapus {deleteField.label}?</h3>
             <p className="text-on-surface-variant text-body-sm mb-8">
-              Apakah Anda yakin ingin menghapus detail informasi ini? Tindakan ini tidak dapat dibatalkan.
+              Data <span className="font-bold text-primary">{deleteField.label}</span> akan dihapus. Tindakan ini tidak dapat dibatalkan.
             </p>
             <div className="flex gap-3">
               <button
-                onClick={() => setShowDeleteModal(false)}
+                onClick={() => setDeleteField(null)}
                 className="flex-1 py-2 text-on-surface-variant font-bold border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all"
               >
                 Batal
@@ -284,7 +288,7 @@ export default function ProfilePage() {
 
       {/* Toast */}
       {toast.show && (
-        <div className={`fixed bottom-8 right-8 z-[200] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 border border-on-primary/10 min-w-[280px] transition-all ${
+        <div className={`fixed bottom-8 right-8 z-[200] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[280px] transition-all ${
           toast.type === 'success' ? 'bg-navy-custom text-on-primary' : 'bg-error text-on-error'
         }`}>
           <span className="material-symbols-outlined text-tertiary-fixed">
