@@ -26,6 +26,8 @@ export default function DashboardPage() {
   const [criticalAlerts, setCriticalAlerts] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [recentLogs, setRecentLogs] = useState<{userId: string; action: string; time: string; ipAddress: string; status: string}[]>([]);
+  const [formData, setFormData] = useState({ title: '', severity: 'rendah', target: '', description: '' });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     // Fetch incidents
@@ -453,10 +455,41 @@ export default function DashboardPage() {
               </div>
               <form
                 className="p-6 space-y-4"
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  setShowModal(false);
-                  setToast({ show: true, message: "Insiden berhasil ditambahkan", type: "success" });
+                  setSaving(true);
+                  try {
+                    const res = await fetch('/api/incidents', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        title: formData.title,
+                        description: formData.description,
+                        severity: formData.severity,
+                        status: 'terbuka',
+                        target: formData.target,
+                      }),
+                    });
+                    const data = await res.json();
+                    if (data.incident) {
+                      setTotalIncidents(prev => prev + 1);
+                      const newInc: Incident = {
+                        id: `#INC-${data.incident.id.slice(0, 4).toUpperCase()}`,
+                        title: data.incident.title,
+                        target: data.incident.target || '-',
+                        severity: data.incident.severity,
+                        status: 'Terbuka',
+                      };
+                      setIncidents(prev => [newInc, ...prev].slice(0, 2));
+                      setToast({ show: true, message: "Insiden berhasil ditambahkan ke database!", type: "success" });
+                    }
+                  } catch {
+                    setToast({ show: true, message: "Gagal menyimpan insiden.", type: "error" });
+                  } finally {
+                    setSaving(false);
+                    setShowModal(false);
+                    setFormData({ title: '', severity: 'rendah', target: '', description: '' });
+                  }
                 }}
               >
                 <div className="space-y-1">
