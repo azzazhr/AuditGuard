@@ -74,10 +74,10 @@ export default function LoginPage() {
         {/* Description */}
         <div className="mb-8">
           <h2 className="text-2xl font-semibold text-black mb-2">
-            Visibilitas terpusat untuk audit sistem kritis
+            Platform monitoring kepatuhan perusahaan untuk audit sistem,
           </h2>
           <p className="text-2xl font-semibold text-black">
-            dan deteksi anomali waktu nyata.
+            pelacakan aktivitas, dan deteksi anomali secara real-time.
           </p>
         </div>
 
