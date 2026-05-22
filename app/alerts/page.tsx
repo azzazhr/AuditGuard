@@ -12,22 +12,10 @@ interface Alert {
   time: string;
 }
 
-interface Anomaly {
-  id: string;
-  time: string;
-  type: string;
-  entity: string;
-  confidence: number;
-  status: 'aktif' | 'tertunda';
-}
-
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [anomalies] = useState<Anomaly[]>([
-    { id: '1', time: '15:02:11', type: 'Login Burst', entity: 'Auth Gateway v2', confidence: 98, status: 'aktif' },
-    { id: '2', time: '14:58:02', type: 'Geo-Impossible', entity: 'User: k_thompson', confidence: 72, status: 'aktif' },
-  ]);
   const [loading, setLoading] = useState(true);
+  const [timeFilter, setTimeFilter] = useState<'1H' | '24H'>('1H');
 
   useEffect(() => {
     fetch('/api/alerts')
@@ -45,8 +33,6 @@ export default function AlertsPage() {
       })
       .finally(() => setLoading(false));
   }, []);
-
-  const [timeFilter, setTimeFilter] = useState<'1H' | '24H'>('1H');
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
@@ -106,7 +92,9 @@ export default function AlertsPage() {
                   <p className="text-on-surface-variant font-medium text-sm mb-1">
                     Aktivitas Mencurigakan
                   </p>
-                  <h3 className="font-headline-md text-headline-md text-error">3 Terdeteksi</h3>
+                  <h3 className="font-headline-md text-headline-md text-error">
+                    {loading ? '...' : `${alerts.filter(a => a.severity === 'kritis').length} Terdeteksi`}
+                  </h3>
                 </div>
                 <div className="bg-error-container p-2 rounded-lg text-error">
                   <span className="material-symbols-outlined">warning</span>
@@ -115,7 +103,7 @@ export default function AlertsPage() {
               <div className="mt-4 flex items-center gap-2">
                 <span className="flex h-2 w-2 rounded-full bg-error animate-pulse"></span>
                 <p className="text-body-sm text-on-surface-variant">
-                  Terakhir terdeteksi 12 menit lalu
+                  {alerts.length > 0 ? `${alerts.length} total alert aktif` : 'Memuat data...'}
                 </p>
               </div>
             </div>
@@ -124,16 +112,18 @@ export default function AlertsPage() {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-on-surface-variant font-medium text-sm mb-1">
-                    Frekuensi Login Gagal
+                    Peringatan
                   </p>
-                  <h3 className="font-headline-md text-headline-md text-primary">Alert Tinggi</h3>
+                  <h3 className="font-headline-md text-headline-md text-primary">
+                    {loading ? '...' : `${alerts.filter(a => a.severity === 'peringatan').length} Alert`}
+                  </h3>
                 </div>
                 <div className="bg-secondary-container p-2 rounded-lg text-secondary">
                   <span className="material-symbols-outlined">lock_reset</span>
                 </div>
               </div>
               <p className="mt-4 text-body-sm text-on-surface-variant">
-                IP Target: <span className="font-mono text-primary font-bold">45.12.33.1</span>
+                {alerts.filter(a => a.severity === 'peringatan')[0]?.title || 'Tidak ada peringatan'}
               </p>
             </div>
 
@@ -141,16 +131,21 @@ export default function AlertsPage() {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-on-surface-variant font-medium text-sm mb-1">
-                    Skor Anomali Live
+                    Minor
                   </p>
-                  <h3 className="font-headline-md text-headline-md text-[#98805d]">84 / 100</h3>
+                  <h3 className="font-headline-md text-headline-md text-[#98805d]">
+                    {loading ? '...' : `${alerts.filter(a => a.severity === 'minor').length} Alert`}
+                  </h3>
                 </div>
                 <div className="bg-tertiary-fixed p-2 rounded-lg text-on-tertiary-fixed">
                   <span className="material-symbols-outlined">trending_up</span>
                 </div>
               </div>
               <div className="mt-4 w-full bg-surface-container rounded-full h-2 overflow-hidden">
-                <div className="bg-[#98805d] h-full rounded-full" style={{ width: '84%' }}></div>
+                <div
+                  className="bg-[#98805d] h-full rounded-full transition-all"
+                  style={{ width: alerts.length > 0 ? `${Math.round((alerts.filter(a => a.severity === 'minor').length / alerts.length) * 100)}%` : '0%' }}
+                ></div>
               </div>
             </div>
 
