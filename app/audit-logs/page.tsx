@@ -75,30 +75,20 @@ export default function AuditLogsPage() {
                   </h3>
                   <div className="space-y-8 relative">
                     <div className="absolute left-3 top-0 bottom-0 w-px bg-outline-variant"></div>
-                    
-                    <div className="relative pl-10">
-                      <div className="absolute left-1.5 top-1.5 w-3 h-3 rounded-full bg-primary ring-4 ring-white"></div>
-                      <div className="text-body-sm font-semibold">Perbarui Aturan Firewall</div>
-                      <div className="text-[12px] text-on-surface-variant">10:15 • admin_user</div>
-                    </div>
-
-                    <div className="relative pl-10">
-                      <div className="absolute left-1.5 top-1.5 w-3 h-3 rounded-full bg-outline ring-4 ring-white"></div>
-                      <div className="text-body-sm font-semibold">Lihat Insiden #9021</div>
-                      <div className="text-[12px] text-on-surface-variant">10:10 • operator_2</div>
-                    </div>
-
-                    <div className="relative pl-10">
-                      <div className="absolute left-1.5 top-1.5 w-3 h-3 rounded-full bg-error ring-4 ring-white"></div>
-                      <div className="text-body-sm font-semibold text-error">Gagal Login</div>
-                      <div className="text-[12px] text-on-surface-variant">09:45 • guest_acc</div>
-                    </div>
-
-                    <div className="relative pl-10">
-                      <div className="absolute left-1.5 top-1.5 w-3 h-3 rounded-full bg-outline ring-4 ring-white"></div>
-                      <div className="text-body-sm font-semibold">Logout Sistem</div>
-                      <div className="text-[12px] text-on-surface-variant">09:30 • manager_01</div>
-                    </div>
+                    {auditLogs.slice(0, 5).map((log, index) => (
+                      <div key={log.id} className="relative pl-10">
+                        <div className={`absolute left-1.5 top-1.5 w-3 h-3 rounded-full ring-4 ring-white ${
+                          log.status === 'peringatan' ? 'bg-error' : index === 0 ? 'bg-primary' : 'bg-outline'
+                        }`}></div>
+                        <div className={`text-body-sm font-semibold ${log.status === 'peringatan' ? 'text-error' : ''}`}>
+                          {log.action}
+                        </div>
+                        <div className="text-[12px] text-on-surface-variant">{log.time} • {log.userId}</div>
+                      </div>
+                    ))}
+                    {auditLogs.length === 0 && (
+                      <div className="text-[12px] text-on-surface-variant pl-10">Memuat aktivitas...</div>
+                    )}
                   </div>
 
                   <div className="mt-10 pt-8 border-t border-outline-variant grid grid-cols-2 gap-4">
@@ -106,13 +96,19 @@ export default function AuditLogsPage() {
                       <div className="text-[11px] text-on-surface-variant uppercase font-medium mb-1">
                         Tingkat Berhasil
                       </div>
-                      <div className="text-headline-sm font-bold text-primary">98.2%</div>
+                      <div className="text-headline-sm font-bold text-primary">
+                        {auditLogs.length > 0
+                          ? `${Math.round((auditLogs.filter(l => l.status === 'berhasil').length / auditLogs.length) * 100)}%`
+                          : '-'}
+                      </div>
                     </div>
                     <div>
                       <div className="text-[11px] text-error uppercase font-medium mb-1">
                         Peringatan Hari Ini
                       </div>
-                      <div className="text-headline-sm font-bold text-error">12</div>
+                      <div className="text-headline-sm font-bold text-error">
+                        {auditLogs.filter(l => l.status === 'peringatan').length}
+                      </div>
                     </div>
                   </div>
                 </div>
