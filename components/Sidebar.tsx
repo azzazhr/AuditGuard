@@ -60,6 +60,13 @@ export default function Sidebar() {
           <span className="material-symbols-outlined">account_circle</span>
           Profil
         </Link>
+        <Link
+          href="/"
+          className="flex items-center gap-3 px-4 py-3 text-error/80 hover:bg-error/10 transition-colors cursor-pointer active:opacity-80 font-body-md font-medium"
+        >
+          <span className="material-symbols-outlined">logout</span>
+          Keluar
+        </Link>
       </div>
     </aside>
   );
