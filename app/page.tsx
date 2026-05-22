@@ -92,7 +92,7 @@ export default function LoginPage() {
           {/* Form Header */}
           <div className="mb-8">
             <h2 className="text-2xl font-bold text-black mb-2">
-              {isRegister ? "Buat Akun Baru" : "Selamat Datang Kembali"}
+              {isRegister ? "Buat Akun Baru" : "Selamat Datang"}
             </h2>
             <p className="text-[14px] text-gray-600">
               {isRegister 
