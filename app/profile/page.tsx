@@ -2,7 +2,8 @@
 
 import Sidebar from '@/components/Sidebar';
 import TopNav from '@/components/TopNav';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
 
 type FieldKey = 'name' | 'email' | 'department' | 'employeeId';
 
@@ -26,16 +27,36 @@ const fields: Field[] = [
 
 export default function ProfilePage() {
   const [data, setData] = useState<Record<FieldKey, string>>({
-    name: 'Alex Rivera',
-    email: 'alex.rivera@auditguard.com',
+    name: '',
+    email: '',
     department: 'Kepatuhan & Audit Internal',
-    employeeId: 'AG-982110-XR',
+    employeeId: '-',
   });
-
+  const [initials, setInitials] = useState('');
+  const [loading, setLoading] = useState(true);
   const [editField, setEditField] = useState<Field | null>(null);
   const [editValue, setEditValue] = useState('');
   const [deleteField, setDeleteField] = useState<Field | null>(null);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' as 'success' | 'error' });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Pengguna';
+        const email = user.email || '';
+        setData(prev => ({ ...prev, name, email }));
+        const parts = name.trim().split(' ');
+        const ini = parts.length >= 2
+          ? (parts[0][0] + parts[1][0]).toUpperCase()
+          : name.slice(0, 2).toUpperCase();
+        setInitials(ini);
+      }
+      setLoading(false);
+    };
+    fetchUser();
+  }, []);
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ show: true, message, type });
@@ -85,20 +106,20 @@ export default function ProfilePage() {
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary-fixed/30 rounded-full blur-3xl -z-10"></div>
               <div className="relative">
                 <div className="w-32 h-32 rounded-2xl bg-primary-fixed flex items-center justify-center border-4 border-white shadow-lg">
-                  <span className="text-primary font-bold text-[32px]">AR</span>
+                  <span className="text-primary font-bold text-[32px]">
+                    {loading ? '...' : initials}
+                  </span>
                 </div>
               </div>
               <div className="text-center md:text-left flex-1">
-                <h2 className="text-[36px] font-bold text-primary leading-tight">{data.name}</h2>
-                <p className="text-on-surface-variant font-medium text-[20px] mt-1">Ketua Kepatuhan</p>
+                <h2 className="text-[36px] font-bold text-primary leading-tight">
+                  {loading ? 'Memuat...' : data.name}
+                </h2>
+                <p className="text-on-surface-variant font-medium text-[16px] mt-1">{data.email}</p>
                 <div className="flex flex-wrap justify-center md:justify-start gap-3 mt-4">
                   <span className="px-3 py-1 bg-primary-fixed text-on-primary-fixed rounded-full text-[12px] font-bold flex items-center gap-1">
                     <span className="material-symbols-outlined text-[14px]">verified</span>
                     Akun Terverifikasi
-                  </span>
-                  <span className="px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full text-[12px] font-bold flex items-center gap-1">
-                    <span className="material-symbols-outlined text-[14px]">apartment</span>
-                    Kantor Pusat
                   </span>
                 </div>
               </div>
@@ -120,20 +141,18 @@ export default function ProfilePage() {
                           <p className="text-on-surface-variant text-[11px] uppercase tracking-wider font-bold font-mono">
                             {field.label}
                           </p>
-                          <p className="text-primary font-medium text-[16px]">{data[field.key]}</p>
+                          <p className="text-primary font-medium text-[16px]">{data[field.key] || '-'}</p>
                         </div>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             onClick={() => openEdit(field)}
                             className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all"
-                            title={`Edit ${field.label}`}
                           >
                             <span className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
                           <button
                             onClick={() => setDeleteField(field)}
                             className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all"
-                            title={`Hapus ${field.label}`}
                           >
                             <span className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
@@ -146,7 +165,6 @@ export default function ProfilePage() {
 
               {/* Sidebar Cards */}
               <div className="space-y-6">
-                {/* Keamanan */}
                 <section className="bg-white/80 backdrop-blur-xl border border-outline-variant rounded-xl p-6 shadow-sm">
                   <div className="flex items-center gap-3 mb-6">
                     <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
@@ -166,7 +184,6 @@ export default function ProfilePage() {
                   </div>
                 </section>
 
-                {/* Statistik */}
                 <section className="bg-navy-custom rounded-xl p-6 shadow-sm text-on-primary">
                   <h3 className="font-bold mb-4 flex items-center gap-2">
                     <span className="material-symbols-outlined">monitoring</span>
@@ -195,7 +212,7 @@ export default function ProfilePage() {
         </main>
       </div>
 
-      {/* Edit Modal — per field */}
+      {/* Edit Modal */}
       {editField && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setEditField(null)} />
@@ -232,17 +249,12 @@ export default function ProfilePage() {
                 )}
               </div>
               <div className="pt-2 flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setEditField(null)}
-                  className="flex-1 py-2 text-on-surface-variant font-bold border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all"
-                >
+                <button type="button" onClick={() => setEditField(null)}
+                  className="flex-1 py-2 text-on-surface-variant font-bold border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all">
                   Batal
                 </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-2 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 transition-all"
-                >
+                <button type="submit"
+                  className="flex-1 py-2 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 transition-all">
                   Simpan
                 </button>
               </div>
@@ -251,7 +263,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Delete Modal — per field */}
+      {/* Delete Modal */}
       {deleteField && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteField(null)} />
@@ -261,19 +273,15 @@ export default function ProfilePage() {
             </div>
             <h3 className="font-bold text-[18px] text-primary mb-2">Hapus {deleteField.label}?</h3>
             <p className="text-on-surface-variant text-body-sm mb-8">
-              Data <span className="font-bold text-primary">{deleteField.label}</span> akan dihapus. Tindakan ini tidak dapat dibatalkan.
+              Data <span className="font-bold text-primary">{deleteField.label}</span> akan dihapus.
             </p>
             <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteField(null)}
-                className="flex-1 py-2 text-on-surface-variant font-bold border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all"
-              >
+              <button onClick={() => setDeleteField(null)}
+                className="flex-1 py-2 text-on-surface-variant font-bold border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all">
                 Batal
               </button>
-              <button
-                onClick={handleDelete}
-                className="flex-1 py-2 bg-error text-on-error font-bold rounded-lg hover:opacity-90 transition-all"
-              >
+              <button onClick={handleDelete}
+                className="flex-1 py-2 bg-error text-on-error font-bold rounded-lg hover:opacity-90 transition-all">
                 Ya, Hapus
               </button>
             </div>
@@ -283,7 +291,7 @@ export default function ProfilePage() {
 
       {/* Toast */}
       {toast.show && (
-        <div className={`fixed bottom-8 right-8 z-[200] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[280px] transition-all ${
+        <div className={`fixed bottom-8 right-8 z-[200] px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 min-w-[280px] ${
           toast.type === 'success' ? 'bg-navy-custom text-on-primary' : 'bg-error text-on-error'
         }`}>
           <span className="material-symbols-outlined text-tertiary-fixed">

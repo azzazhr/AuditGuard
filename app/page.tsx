@@ -1,21 +1,55 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import { createClient } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isRegister, setIsRegister] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      window.location.href = '/dashboard';
-    }, 1500);
+    setError('');
+
+    const supabase = createClient();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    if (isRegister) {
+      const name = formData.get('name') as string;
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: name },
+        },
+      });
+      if (error) {
+        setError(error.message);
+        setIsLoading(false);
+      } else {
+        // Langsung pindah ke form login
+        setIsRegister(false);
+        setError('');
+        setSuccess('Akun berhasil dibuat! Silakan login.');
+        setIsLoading(false);
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setError('Email atau kata sandi salah.');
+        setIsLoading(false);
+      } else {
+        router.push('/dashboard');
+      }
+    }
   };
 
   return (
@@ -246,6 +280,20 @@ export default function LoginPage() {
               </div>
             )}
 
+            {/* Success Message */}
+            {success && (
+              <div className="px-4 py-3 rounded-lg text-[13px] font-medium bg-green-50 text-green-700 border border-green-200">
+                {success}
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="px-4 py-3 rounded-lg text-[13px] font-medium bg-red-50 text-red-700 border border-red-200">
+                {error}
+              </div>
+            )}
+
             {/* Submit Button */}
             <button
               className="w-full bg-black text-white py-3.5 rounded-lg font-semibold text-[15px] hover:bg-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -270,7 +318,7 @@ export default function LoginPage() {
                 {isRegister ? "Sudah punya akun?" : "Belum memiliki akun?"}
                 {" "}
                 <button 
-                  onClick={() => setIsRegister(!isRegister)} 
+                  onClick={() => { setIsRegister(!isRegister); setError(''); setSuccess(''); }} 
                   className="text-black font-semibold hover:underline"
                   type="button"
                 >

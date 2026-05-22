@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 const menuItems = [
   { icon: "dashboard", label: "Dashboard", href: "/dashboard", fill: true },
@@ -13,6 +14,13 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/');
+  };
 
   return (
     <aside className="fixed left-0 top-0 h-full w-[260px] bg-navy-custom dark:bg-primary-container text-on-primary border-r border-outline-variant dark:border-outline shadow-sm flex flex-col py-6 z-50">
@@ -60,13 +68,13 @@ export default function Sidebar() {
           <span className="material-symbols-outlined">account_circle</span>
           Profil
         </Link>
-        <Link
-          href="/"
-          className="flex items-center gap-3 px-4 py-3 text-error/80 hover:bg-error/10 transition-colors cursor-pointer active:opacity-80 font-body-md font-medium"
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 text-error/80 hover:bg-error/10 transition-colors cursor-pointer active:opacity-80 font-body-md font-medium"
         >
           <span className="material-symbols-outlined">logout</span>
           Keluar
-        </Link>
+        </button>
       </div>
     </aside>
   );
