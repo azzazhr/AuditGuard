@@ -77,7 +77,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-end mb-8">
             <div>
               <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">
-                Ringkasan Sistem
+                Dashboard
               </h2>
               <p className="text-on-surface-variant font-body-sm">
                 Pemantauan audit real-time dan status kepatuhan.

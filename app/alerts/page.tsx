@@ -102,7 +102,7 @@ export default function AlertsPage() {
           <div className="flex justify-between items-end mb-8">
             <div>
               <h2 className="font-headline-md text-headline-md text-primary">
-                Deteksi Alert & Anomali
+                Peringatan & Anomali
               </h2>
               <p className="text-on-surface-variant">
                 Pemantauan real-time perilaku sistem dan pengecualian keamanan.

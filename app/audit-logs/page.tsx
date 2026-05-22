@@ -64,13 +64,8 @@ export default function AuditLogsPage() {
             {/* Page Header */}
             <div className="flex justify-between items-center mb-10">
               <div>
-                <nav className="flex text-[12px] text-on-surface-variant mb-1 gap-2 uppercase tracking-wider font-medium">
-                  <span>Utama</span>
-                  <span className="opacity-30">/</span>
-                  <span className="text-primary">Log Audit</span>
-                </nav>
                 <h2 className="font-headline-md text-headline-md text-primary">
-                  Log Audit Pengguna
+                  Log Audit 
                 </h2>
               </div>
               <div className="flex gap-2">
