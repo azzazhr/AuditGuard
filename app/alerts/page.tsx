@@ -164,7 +164,7 @@ export default function AlertsPage() {
             </div>
 
             {/* Simplified Graph */}
-            <div className="col-span-12 lg:col-span-8 bg-white/70 backdrop-blur-xl border border-outline-variant p-6 rounded-xl">
+            <div className="col-span-12 lg:col-span-8 bg-white border border-outline-variant p-6 rounded-xl">
               <div className="flex justify-between items-center mb-8">
                 <h3 className="font-headline-sm text-headline-sm text-primary">
                   Anomali Trafik & Login
@@ -223,7 +223,7 @@ export default function AlertsPage() {
             </div>
 
             {/* Simplified Priority Alert Feed */}
-            <div className="col-span-12 lg:col-span-4 bg-white/70 backdrop-blur-xl border border-outline-variant flex flex-col rounded-xl overflow-hidden">
+            <div className="col-span-12 lg:col-span-4 bg-white border border-outline-variant flex flex-col rounded-xl overflow-hidden">
               <div className="p-6 border-b border-outline-variant">
                 <h3 className="font-headline-sm text-headline-sm text-primary">
                   Feed Alert Prioritas

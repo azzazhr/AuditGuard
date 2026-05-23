@@ -100,7 +100,7 @@ export default function ProfilePage() {
             </div>
 
             {/* Profile Header Card */}
-            <section className="bg-white/80 backdrop-blur-xl border border-outline-variant rounded-xl p-8 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 shadow-sm">
+            <section className="bg-white border border-outline-variant rounded-xl p-8 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 shadow-sm">
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary-fixed/30 rounded-full blur-3xl -z-10"></div>
               <div className="relative">
                 <div className="w-32 h-32 rounded-2xl bg-primary-fixed flex items-center justify-center border-4 border-white shadow-lg">
@@ -128,7 +128,7 @@ export default function ProfilePage() {
 
               {/* Informasi Pribadi */}
               <div className="lg:col-span-2">
-                <section className="bg-white/80 backdrop-blur-xl border border-outline-variant rounded-xl overflow-hidden shadow-sm">
+                <section className="bg-white border border-outline-variant rounded-xl overflow-hidden shadow-sm">
                   <div className="bg-surface-container-low px-6 py-4 border-b border-outline-variant">
                     <h3 className="font-bold text-[20px] text-primary">Informasi Pribadi</h3>
                   </div>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
 
               {/* Sidebar Cards */}
               <div className="space-y-6">
-                <section className="bg-white/80 backdrop-blur-xl border border-outline-variant rounded-xl p-6 shadow-sm">
+                <section className="bg-white border border-outline-variant rounded-xl p-6 shadow-sm">
                   <div className="flex items-center gap-3 mb-6">
                     <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>security</span>
                     <h3 className="font-bold text-[20px] text-primary">Keamanan</h3>

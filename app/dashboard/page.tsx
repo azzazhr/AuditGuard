@@ -127,10 +127,10 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-background text-on-background font-body-md overflow-x-hidden">
       <Sidebar />
-      <TopNav />
-
-      <div className="ml-0 lg:ml-[260px] pt-20 px-4 lg:pt-24 lg:px-8 pb-12">
-        <main className="max-w-[1440px] mx-auto">
+      <div className="flex-1 ml-0 lg:ml-[260px]">
+        <TopNav />
+        <main className="pt-20 px-4 lg:pt-24 lg:px-8 pb-12">
+        <div className="max-w-[1440px] mx-auto">
           {/* Page Header */}
           <div className="flex justify-between items-end mb-8">
             <div>
@@ -403,6 +403,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+        </div>
         </main>
       </div>
 

@@ -165,7 +165,7 @@ export default function SettingsPage() {
             <div className="grid grid-cols-12 gap-6">
               {/* Section: Profil Pengguna & Notifikasi */}
               <div className="col-span-12 lg:col-span-4 space-y-6">
-                <section className="bg-white/70 backdrop-blur-xl border border-outline-variant p-6 rounded-xl shadow-sm">
+                <section className="bg-white border border-outline-variant p-6 rounded-xl shadow-sm">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="font-headline-sm text-headline-sm text-primary">Profil Saya</h3>
                     <span className="material-symbols-outlined text-primary/40">id_card</span>
@@ -187,7 +187,7 @@ export default function SettingsPage() {
               {/* Section: User Management & Identity */}
               <div className="col-span-12 lg:col-span-8 space-y-6">
                 {/* Manajemen Pengguna (CRUD) */}
-                <section className="bg-white/70 backdrop-blur-xl border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+                <section className="bg-white border border-outline-variant rounded-xl shadow-sm overflow-hidden">
                   <div className="p-6 border-b border-outline-variant/30 flex justify-between items-center">
                     <div>
                       <h3 className="font-headline-sm text-headline-sm text-primary">
