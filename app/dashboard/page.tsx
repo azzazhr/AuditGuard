@@ -578,8 +578,8 @@ export default function DashboardPage() {
         <div className="fixed inset-0 z-[100]">
           <div className="modal-overlay absolute inset-0" onClick={() => setShowDetailModal(false)}></div>
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl p-6">
-            <div className="bg-surface rounded-2xl shadow-2xl overflow-hidden border border-outline-variant modal-content">
-              <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+            <div className="bg-surface rounded-2xl shadow-2xl overflow-hidden border border-outline-variant modal-content max-h-[90vh] flex flex-col">
+              <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low flex-shrink-0">
                 <h3 className="font-headline-sm text-[18px] text-navy-custom">Detail Insiden {selectedIncident.id}</h3>
                 <button
                   className="material-symbols-outlined text-on-surface-variant hover:text-navy-custom transition-colors"
@@ -588,7 +588,7 @@ export default function DashboardPage() {
                   close
                 </button>
               </div>
-              <div className="p-6 space-y-6">
+              <div className="p-6 space-y-6 overflow-y-auto flex-1">
                 {/* ID & Status */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
