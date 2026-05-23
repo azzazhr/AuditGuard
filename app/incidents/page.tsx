@@ -255,7 +255,7 @@ export default function IncidentsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-surface">
+    <div className="flex min-h-screen bg-background">
       <Sidebar />
       <div className="flex-1 ml-0 lg:ml-[260px]">
         <TopNav />

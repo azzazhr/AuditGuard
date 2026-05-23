@@ -76,7 +76,7 @@ export default function AlertsPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc]">
+    <div className="flex min-h-screen bg-background">
       <Sidebar />
       <div className="flex-1 ml-0 lg:ml-[260px]">
         <TopNav />

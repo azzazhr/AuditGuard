@@ -125,7 +125,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="bg-surface text-on-background font-body-md overflow-x-hidden min-h-screen">
+    <div className="flex min-h-screen bg-background text-on-background font-body-md overflow-x-hidden">
       <Sidebar />
       <TopNav />
 
