@@ -36,6 +36,9 @@ export default function ProfilePage() {
   const [editValue, setEditValue] = useState('');
   const [deleteField, setDeleteField] = useState<Field | null>(null);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' as 'success' | 'error' });
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ newPassword: '', confirmPassword: '' });
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -79,6 +82,29 @@ export default function ProfilePage() {
     setData({ ...data, [deleteField.key]: '-' });
     setDeleteField(null);
     setTimeout(() => showToast(`${deleteField.label} dihapus`, 'error'), 300);
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      showToast('Password tidak cocok', 'error');
+      return;
+    }
+    if (passwordForm.newPassword.length < 6) {
+      showToast('Password minimal 6 karakter', 'error');
+      return;
+    }
+    setPasswordLoading(true);
+    const supabase = createClient();
+    const { error } = await supabase.auth.updateUser({ password: passwordForm.newPassword });
+    setPasswordLoading(false);
+    if (error) {
+      showToast('Gagal mengganti password: ' + error.message, 'error');
+    } else {
+      setShowPasswordModal(false);
+      setPasswordForm({ newPassword: '', confirmPassword: '' });
+      setTimeout(() => showToast('Password berhasil diperbarui'), 300);
+    }
   };
 
   return (
@@ -176,7 +202,9 @@ export default function ProfilePage() {
                         <p className="text-[12px] text-on-surface-variant">Terakhir diatur 2 hari lalu</p>
                       </div>
                     </div>
-                    <button className="w-full py-2 border border-outline-variant text-primary font-bold rounded-lg hover:bg-surface-container-high transition-colors text-body-sm">
+                    <button
+                      onClick={() => setShowPasswordModal(true)}
+                      className="w-full py-2 border border-outline-variant text-primary font-bold rounded-lg hover:bg-surface-container-high transition-colors text-body-sm">
                       Ganti Kata Sandi
                     </button>
                   </div>
@@ -260,6 +288,60 @@ export default function ProfilePage() {
                 Ya, Hapus
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowPasswordModal(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+            <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center">
+              <h3 className="font-bold text-[18px] text-primary">Ganti Kata Sandi</h3>
+              <button onClick={() => setShowPasswordModal(false)} className="text-on-surface-variant hover:text-primary transition-colors">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <form onSubmit={handleChangePassword} className="p-6 space-y-4">
+              <div className="space-y-1">
+                <label className="text-[11px] uppercase font-bold text-on-surface-variant tracking-wider">
+                  Password Baru
+                </label>
+                <input
+                  className="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 outline-none text-sm"
+                  type="password"
+                  placeholder="Minimal 6 karakter"
+                  value={passwordForm.newPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                  required
+                  minLength={6}
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[11px] uppercase font-bold text-on-surface-variant tracking-wider">
+                  Konfirmasi Password Baru
+                </label>
+                <input
+                  className="w-full px-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary/20 outline-none text-sm"
+                  type="password"
+                  placeholder="Ulangi password baru"
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="pt-2 flex gap-3">
+                <button type="button" onClick={() => setShowPasswordModal(false)}
+                  className="flex-1 py-2 text-on-surface-variant font-bold border border-outline-variant rounded-lg hover:bg-surface-container-low transition-all">
+                  Batal
+                </button>
+                <button type="submit" disabled={passwordLoading}
+                  className="flex-1 py-2 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 transition-all disabled:opacity-50">
+                  {passwordLoading ? 'Menyimpan...' : 'Simpan'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
