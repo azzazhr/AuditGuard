@@ -290,10 +290,7 @@ export default function IncidentsPage() {
               <option value="dalam-proses">Dalam Proses</option>
               <option value="selesai">Selesai</option>
             </select>
-            <div className="flex items-center gap-2 bg-white border border-outline-variant rounded-lg px-3 py-1.5 text-sm cursor-pointer hover:border-primary transition-all">
-              <span className="material-symbols-outlined text-sm text-on-surface-variant">calendar_today</span>
-              <span>24 Jam Terakhir</span>
-            </div>
+
             <button 
               onClick={resetFilters}
               className="text-on-surface-variant hover:text-primary text-xs font-medium ml-2"
