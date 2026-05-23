@@ -31,7 +31,19 @@ export default function DashboardPage() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [recentLogs, setRecentLogs] = useState<{userId: string; action: string; time: string; ipAddress: string; status: string}[]>([]);
   const [formData, setFormData] = useState({ title: '', severity: 'rendah', target: '', description: '' });
+  const [editIncident, setEditIncident] = useState<Incident | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const openEditModal = (incident: Incident) => {
+    setEditIncident(incident);
+    setFormData({
+      title: incident.title,
+      severity: incident.severity,
+      target: incident.target,
+      description: '',
+    });
+    setShowModal(true);
+  };
 
   useEffect(() => {
     // Fetch incidents
@@ -337,7 +349,7 @@ export default function DashboardPage() {
                               <span className="material-symbols-outlined text-[18px]">visibility</span>
                             </button>
                             <button
-                              onClick={() => setShowModal(true)}
+                              onClick={() => openEditModal(incident)}
                               className="p-1.5 text-on-surface-variant hover:text-navy-custom transition-colors"
                               title="Edit"
                             >
@@ -404,10 +416,12 @@ export default function DashboardPage() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg p-6">
             <div className="bg-surface rounded-2xl shadow-2xl overflow-hidden border border-outline-variant modal-content">
               <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
-                <h3 className="font-headline-sm text-[18px] text-navy-custom">Informasi Audit Baru</h3>
+                <h3 className="font-headline-sm text-[18px] text-navy-custom">
+                  {editIncident ? 'Edit Insiden' : 'Informasi Audit Baru'}
+                </h3>
                 <button
                   className="material-symbols-outlined text-on-surface-variant hover:text-navy-custom transition-colors"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => { setShowModal(false); setEditIncident(null); }}
                 >
                   close
                 </button>
@@ -440,13 +454,14 @@ export default function DashboardPage() {
                         status: 'Terbuka',
                       };
                       setIncidents(prev => [newInc, ...prev].slice(0, 2));
-                      setToast({ show: true, message: "Insiden berhasil ditambahkan ke database!", type: "success" });
+                      setToast({ show: true, message: editIncident ? "Insiden berhasil diperbarui!" : "Insiden berhasil ditambahkan!", type: "success" });
                     }
                   } catch {
                     setToast({ show: true, message: "Gagal menyimpan insiden.", type: "error" });
                   } finally {
                     setSaving(false);
                     setShowModal(false);
+                    setEditIncident(null);
                     setFormData({ title: '', severity: 'rendah', target: '', description: '' });
                   }
                 }}
@@ -460,6 +475,8 @@ export default function DashboardPage() {
                     placeholder="Contoh: Ancaman Malware Terdeteksi"
                     required
                     type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -467,7 +484,11 @@ export default function DashboardPage() {
                     <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">
                       Keparahan
                     </label>
-                    <select className="w-full rounded-lg border-outline-variant bg-surface-container-low text-sm focus:ring-1 focus:ring-navy-custom outline-none px-4 py-2 text-on-surface">
+                    <select
+                      className="w-full rounded-lg border-outline-variant bg-surface-container-low text-sm focus:ring-1 focus:ring-navy-custom outline-none px-4 py-2 text-on-surface"
+                      value={formData.severity}
+                      onChange={(e) => setFormData({ ...formData, severity: e.target.value })}
+                    >
                       <option value="rendah">Rendah</option>
                       <option value="sedang">Sedang</option>
                       <option value="tinggi">Tinggi</option>
@@ -482,6 +503,8 @@ export default function DashboardPage() {
                       className="w-full rounded-lg border-outline-variant bg-surface-container-low text-sm focus:ring-1 focus:ring-navy-custom outline-none px-4 py-2 text-on-surface"
                       placeholder="Contoh: Server-PROD-01"
                       type="text"
+                      value={formData.target}
+                      onChange={(e) => setFormData({ ...formData, target: e.target.value })}
                     />
                   </div>
                 </div>
@@ -492,8 +515,9 @@ export default function DashboardPage() {
                   <textarea
                     className="w-full rounded-lg border-outline-variant bg-surface-container-low text-sm focus:ring-1 focus:ring-navy-custom outline-none px-4 py-2 resize-none text-on-surface"
                     placeholder="Jelaskan detail temuan audit..."
-                    required
                     rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
                 </div>
                 <div className="pt-4 flex gap-3">
