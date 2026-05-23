@@ -416,21 +416,6 @@ export default function SettingsPage() {
                     required
                   />
                 </div>
-                <div className="space-y-1">
-                  <label className="text-[12px] font-bold text-on-surface-variant uppercase">
-                    Peran Sistem
-                  </label>
-                  <select
-                    value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="w-full rounded-lg border-outline-variant bg-surface-container-low text-body-sm focus:ring-primary"
-                  >
-                    <option>Admin Utama</option>
-                    <option>Auditor</option>
-                    <option>Operator Log</option>
-                    <option>Pengamat</option>
-                  </select>
-                </div>
                 <div className="pt-4 flex gap-3">
                   <button
                     type="button"
