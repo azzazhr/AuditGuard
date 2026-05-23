@@ -16,7 +16,7 @@ interface Field {
 
 const fields: Field[] = [
   { key: 'name', label: 'Nama Lengkap', type: 'text' },
-  { key: 'email', label: 'Email Kantor', type: 'email' },
+  { key: 'email', label: 'Email', type: 'email' },
   {
     key: 'department',
     label: 'Departemen',
