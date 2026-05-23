@@ -142,10 +142,6 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex gap-3">
-              <button className="px-5 py-2 bg-white border border-outline-variant text-on-surface-variant rounded-lg text-body-sm font-bold hover:bg-surface-container-low transition-all flex items-center gap-2">
-                <span className="material-symbols-outlined text-[18px]">download</span>
-                Ekspor Laporan
-              </button>
               <button
                 onClick={() => setShowModal(true)}
                 className="px-5 py-2 bg-navy-custom text-on-primary rounded-lg text-body-sm font-bold hover:opacity-90 shadow-sm transition-all flex items-center gap-2"

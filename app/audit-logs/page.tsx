@@ -73,10 +73,6 @@ export default function AuditLogsPage() {
                 </p>
               </div>
               <div className="flex gap-2">
-                <button className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded hover:opacity-90 transition-all text-body-sm font-medium">
-                  <span className="material-symbols-outlined text-[18px]">download</span>
-                  Ekspor Laporan
-                </button>
               </div>
             </div>
 

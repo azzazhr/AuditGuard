@@ -91,10 +91,6 @@ export default function AlertsPage() {
               </p>
             </div>
             <div className="flex gap-3">
-              <button className="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-medium hover:opacity-90 transition-all flex items-center gap-2">
-                <span className="material-symbols-outlined text-[20px]">download</span>
-                Ekspor Laporan
-              </button>
             </div>
           </div>
 
