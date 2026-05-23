@@ -85,65 +85,68 @@ export default function AlertsPage() {
 
           {/* Bento Grid Layout */}
           <div className="grid grid-cols-12 gap-6">
-            {/* Key Metrics */}
-            <div className="col-span-12 md:col-span-4 bg-white/70 backdrop-blur-xl border border-outline-variant p-6 rounded-xl flex flex-col justify-between">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-on-surface-variant font-medium text-sm mb-1">
-                    Aktivitas Mencurigakan
-                  </p>
-                  <h3 className="font-headline-md text-headline-md text-error">
-                    {loading ? '...' : `${alerts.filter(a => a.severity === 'kritis').length} Terdeteksi`}
-                  </h3>
-                </div>
-                <div className="bg-error-container p-2 rounded-lg text-error">
+            {/* Key Metrics — desain sama dengan dashboard */}
+            {/* Card 1 - Kritis - Merah */}
+            <div className="col-span-12 md:col-span-4 bg-white p-6 rounded-xl border border-outline-variant/30 shadow-md border-l-4 border-l-red-500">
+              <div className="flex justify-between items-start mb-4">
+                <div className="p-2.5 bg-red-50 text-red-500 rounded-lg">
                   <span className="material-symbols-outlined">warning</span>
                 </div>
+                <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">
+                  Kritis
+                </span>
               </div>
-              <div className="mt-4 flex items-center gap-2">
-                <span className="flex h-2 w-2 rounded-full bg-error animate-pulse"></span>
-                <p className="text-body-sm text-on-surface-variant">
-                  {alerts.length > 0 ? `${alerts.length} total alert aktif` : 'Memuat data...'}
-                </p>
-              </div>
+              <p className="text-gray-500 font-medium text-[11px] mb-1 uppercase tracking-wider">
+                Aktivitas Mencurigakan
+              </p>
+              <h3 className="font-display-lg text-[32px] text-red-500">
+                {loading ? '...' : alerts.filter(a => a.severity === 'kritis').length}
+              </h3>
+              <p className="text-body-sm text-on-surface-variant mt-2">
+                {alerts.length > 0 ? `${alerts.length} total alert aktif` : 'Memuat data...'}
+              </p>
             </div>
 
-            <div className="col-span-12 md:col-span-4 bg-white/70 backdrop-blur-xl border border-outline-variant p-6 rounded-xl flex flex-col justify-between">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-on-surface-variant font-medium text-sm mb-1">
-                    Peringatan
-                  </p>
-                  <h3 className="font-headline-md text-headline-md text-primary">
-                    {loading ? '...' : `${alerts.filter(a => a.severity === 'peringatan').length} Alert`}
-                  </h3>
-                </div>
-                <div className="bg-secondary-container p-2 rounded-lg text-secondary">
+            {/* Card 2 - Peringatan - Oranye */}
+            <div className="col-span-12 md:col-span-4 bg-white p-6 rounded-xl border border-outline-variant/30 shadow-md border-l-4 border-l-orange-400">
+              <div className="flex justify-between items-start mb-4">
+                <div className="p-2.5 bg-orange-50 text-orange-500 rounded-lg">
                   <span className="material-symbols-outlined">lock_reset</span>
                 </div>
+                <span className="bg-orange-400 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">
+                  Peringatan
+                </span>
               </div>
-              <p className="mt-4 text-body-sm text-on-surface-variant">
+              <p className="text-gray-500 font-medium text-[11px] mb-1 uppercase tracking-wider">
+                Peringatan
+              </p>
+              <h3 className="font-display-lg text-[32px] text-orange-400">
+                {loading ? '...' : alerts.filter(a => a.severity === 'peringatan').length}
+              </h3>
+              <p className="text-body-sm text-on-surface-variant mt-2 truncate">
                 {alerts.filter(a => a.severity === 'peringatan')[0]?.title || 'Tidak ada peringatan'}
               </p>
             </div>
 
-            <div className="col-span-12 md:col-span-4 bg-white/70 backdrop-blur-xl border border-outline-variant p-6 rounded-xl flex flex-col justify-between">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-on-surface-variant font-medium text-sm mb-1">
-                    Minor
-                  </p>
-                  <h3 className="font-headline-md text-headline-md text-[#98805d]">
-                    {loading ? '...' : `${alerts.filter(a => a.severity === 'minor').length} Alert`}
-                  </h3>
-                </div>
-                <div className="bg-tertiary-fixed p-2 rounded-lg text-on-tertiary-fixed">
+            {/* Card 3 - Minor - Biru */}
+            <div className="col-span-12 md:col-span-4 bg-white p-6 rounded-xl border border-outline-variant/30 shadow-md border-l-4 border-l-blue-400">
+              <div className="flex justify-between items-start mb-4">
+                <div className="p-2.5 bg-blue-50 text-blue-500 rounded-lg">
                   <span className="material-symbols-outlined">trending_up</span>
                 </div>
+                <span className="bg-blue-400 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">
+                  Minor
+                </span>
               </div>
-              <div className="mt-4 w-full bg-surface-container rounded-full h-2 overflow-hidden">
+              <p className="text-gray-500 font-medium text-[11px] mb-1 uppercase tracking-wider">
+                Minor
+              </p>
+              <h3 className="font-display-lg text-[32px] text-blue-400">
+                {loading ? '...' : alerts.filter(a => a.severity === 'minor').length}
+              </h3>
+              <div className="mt-3 w-full bg-gray-100 rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-[#98805d] h-full rounded-full transition-all"
+                  className="bg-blue-400 h-full rounded-full transition-all"
                   style={{ width: alerts.length > 0 ? `${Math.round((alerts.filter(a => a.severity === 'minor').length / alerts.length) * 100)}%` : '0%' }}
                 ></div>
               </div>
