@@ -183,6 +183,15 @@ export default function IncidentsPage() {
     return matchSeverity && matchStatus;
   });
 
+  // Pagination
+  const ITEMS_PER_PAGE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredIncidents.length / ITEMS_PER_PAGE);
+  const paginatedIncidents = filteredIncidents.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   // Reset filter function
   const resetFilters = () => {
     setFilterSeverity('semua');
@@ -193,18 +202,12 @@ export default function IncidentsPage() {
   // Handle filter change
   const handleSeverityChange = (value: string) => {
     setFilterSeverity(value);
-    console.log('Filter Keparahan:', value);
-    console.log('Data yang ditampilkan:', incidents.filter(inc => 
-      value === 'semua' || inc.severity === value
-    ));
+    setCurrentPage(1);
   };
 
   const handleStatusChange = (value: string) => {
     setFilterStatus(value);
-    console.log('Filter Status:', value);
-    console.log('Data yang ditampilkan:', incidents.filter(inc => 
-      value === 'semua' || inc.status === value
-    ));
+    setCurrentPage(1);
   };
 
   const getSeverityBadge = (severity: string) => {
@@ -343,7 +346,7 @@ export default function IncidentsPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredIncidents.map((incident) => (
+                    paginatedIncidents.map((incident) => (
                     <tr key={incident.id} className="hover:bg-surface-container-low transition-colors duration-150">
                       <td className="px-6 py-4 font-mono text-sm text-primary font-medium">
                         {incident.id}
@@ -404,22 +407,34 @@ export default function IncidentsPage() {
             {/* Pagination */}
             <div className="px-6 py-3 border-t border-outline-variant flex items-center justify-between bg-surface-container-lowest">
               <div className="text-xs text-on-surface-variant">
-                Menampilkan {filteredIncidents.length} dari {incidents.length} insiden
+                Menampilkan {Math.min((currentPage - 1) * ITEMS_PER_PAGE + 1, filteredIncidents.length)}–{Math.min(currentPage * ITEMS_PER_PAGE, filteredIncidents.length)} dari {filteredIncidents.length} insiden
               </div>
               <div className="flex items-center gap-1">
-                <button className="p-1 rounded hover:bg-surface-container disabled:opacity-30" disabled>
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="p-1 rounded hover:bg-surface-container disabled:opacity-30"
+                >
                   <span className="material-symbols-outlined text-sm">chevron_left</span>
                 </button>
-                <button className="w-8 h-8 rounded-lg text-[12px] font-bold bg-primary text-on-primary">
-                  1
-                </button>
-                <button className="w-8 h-8 rounded-lg text-[12px] font-medium hover:bg-surface-container transition-all">
-                  2
-                </button>
-                <button className="w-8 h-8 rounded-lg text-[12px] font-medium hover:bg-surface-container transition-all">
-                  3
-                </button>
-                <button className="p-1 rounded hover:bg-surface-container transition-all">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded-lg text-[12px] font-bold transition-all ${
+                      currentPage === page
+                        ? 'bg-primary text-on-primary'
+                        : 'hover:bg-surface-container font-medium'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages || totalPages === 0}
+                  className="p-1 rounded hover:bg-surface-container disabled:opacity-30 transition-all"
+                >
                   <span className="material-symbols-outlined text-sm">chevron_right</span>
                 </button>
               </div>
