@@ -5,7 +5,7 @@ import TopNav from '@/components/TopNav';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-type FieldKey = 'name' | 'email' | 'department' | 'employeeId';
+type FieldKey = 'name' | 'email' | 'department';
 
 interface Field {
   key: FieldKey;
@@ -22,7 +22,6 @@ const fields: Field[] = [
     label: 'Departemen',
     options: ['Kepatuhan & Audit Internal', 'Manajemen Risiko', 'Teknologi Informasi', 'Sumber Daya Manusia'],
   },
-  { key: 'employeeId', label: 'ID Karyawan', type: 'text' },
 ];
 
 export default function ProfilePage() {
@@ -30,7 +29,6 @@ export default function ProfilePage() {
     name: '',
     email: '',
     department: 'Kepatuhan & Audit Internal',
-    employeeId: '-',
   });
   const [initials, setInitials] = useState('');
   const [loading, setLoading] = useState(true);
