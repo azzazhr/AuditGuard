@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Sidebar from "@/components/Sidebar";
 import Toast from "@/components/Toast";
 import TopNav from "@/components/TopNav";
@@ -243,7 +244,7 @@ export default function DashboardPage() {
                   <YAxis tick={{ fontSize: 12 }} />
                   <Tooltip
                     contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }}
-                    formatter={(value: number) => [`${value} insiden`, 'Jumlah']}
+                    formatter={(value: number | string | undefined) => [`${value} insiden`, 'Jumlah']}
                   />
                   <Bar dataKey="insiden" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                 </BarChart>
@@ -274,7 +275,7 @@ export default function DashboardPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }}
-                    formatter={(value: number) => [`${value}%`, '']}
+                    formatter={(value: number | string | undefined) => [`${value}%`, '']}
                   />
                   <Legend iconType="circle" iconSize={10} wrapperStyle={{ fontSize: '12px' }} />
                 </PieChart>
@@ -287,9 +288,9 @@ export default function DashboardPage() {
             <div className="xl:col-span-2 bg-white rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden">
               <div className="p-6 border-b border-outline-variant/10 flex justify-between items-center">
                 <h4 className="font-headline-sm text-navy-custom">Daftar Insiden Terkini</h4>
-                <a className="text-navy-custom text-[12px] font-bold hover:underline" href="#">
+                <Link href="/incidents" className="text-navy-custom text-[12px] font-bold hover:underline">
                   Lihat Semua
-                </a>
+                </Link>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
