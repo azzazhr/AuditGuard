@@ -120,10 +120,36 @@ export default function IncidentsPage() {
         displayToast('Insiden baru berhasil dibuat!', 'success');
       }
     } else if (modalMode === 'edit' && currentIncident) {
-      setIncidents(incidents.map(inc =>
-        inc.id === currentIncident.id ? { ...inc, ...formData } : inc
-      ));
-      displayToast('Insiden berhasil diperbarui!', 'success');
+      const res = await fetch('/api/incidents', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: currentIncident.id,
+          title: formData.title,
+          description: formData.description,
+          severity: formData.severity,
+          target: formData.target,
+          assigned_to: formData.assignedTo,
+        }),
+      });
+      const data = await res.json();
+      if (data.incident) {
+        setIncidents(incidents.map(inc =>
+          inc.id === currentIncident.id
+            ? {
+                ...inc,
+                title: data.incident.title,
+                description: data.incident.description || '',
+                severity: data.incident.severity,
+                target: data.incident.target || '',
+                assignedTo: data.incident.assigned_to || '',
+              }
+            : inc
+        ));
+        displayToast('Insiden berhasil diperbarui di database!', 'success');
+      } else {
+        displayToast('Gagal memperbarui insiden.', 'error');
+      }
     }
     closeModal();
   };

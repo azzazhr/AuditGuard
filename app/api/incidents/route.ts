@@ -28,3 +28,16 @@ export async function DELETE(request: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ success: true })
 }
+
+export async function PATCH(request: Request) {
+  const body = await request.json()
+  const { id, ...updates } = body
+  const { data, error } = await supabase
+    .from('incidents')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single()
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json({ incident: data })
+}
