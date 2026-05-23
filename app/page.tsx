@@ -178,9 +178,8 @@ export default function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Name Field (Register Only) */}
-            {isRegister && (
-              <div className="space-y-2">
+            {/* Name Field */}
+            <div className="space-y-2">
                 <label 
                   className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider" 
                   htmlFor="name"
@@ -195,13 +194,12 @@ export default function LoginPage() {
                     className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[15px] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all placeholder:text-gray-400"
                     id="name"
                     name="name"
-                    placeholder="John Doe"
+                    placeholder="Nama Anda"
                     required={isRegister}
                     type="text"
                   />
                 </div>
               </div>
-            )}
 
             {/* Email Field */}
             <div className="space-y-2">
@@ -209,7 +207,7 @@ export default function LoginPage() {
                 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider" 
                 htmlFor="email"
               >
-                Alamat Email
+                Email
               </label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
@@ -219,7 +217,7 @@ export default function LoginPage() {
                   className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[15px] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all placeholder:text-gray-400"
                   id="email"
                   name="email"
-                  placeholder="azzahraqina70@gmail.com"
+                  placeholder="Email Anda"
                   required
                   type="email"
                 />
@@ -232,7 +230,7 @@ export default function LoginPage() {
                 className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider" 
                 htmlFor="password"
               >
-                Kata Sandi
+                Password
               </label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
@@ -242,7 +240,7 @@ export default function LoginPage() {
                   className="w-full pl-12 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[15px] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all placeholder:text-gray-400"
                   id="password"
                   name="password"
-                  placeholder="••••••••"
+                  placeholder="Password Anda"
                   required
                   type={showPassword ? "text" : "password"}
                 />
@@ -265,7 +263,7 @@ export default function LoginPage() {
                   className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider" 
                   htmlFor="confirmPassword"
                 >
-                  Konfirmasi Kata Sandi
+                  Konfirmasi Password
                 </label>
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
@@ -275,7 +273,7 @@ export default function LoginPage() {
                     className="w-full pl-12 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[15px] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all placeholder:text-gray-400"
                     id="confirmPassword"
                     name="confirmPassword"
-                    placeholder="••••••••"
+                    placeholder="Konfirmasi Password Anda"
                     required={isRegister}
                     type="password"
                   />
@@ -363,7 +361,7 @@ export default function LoginPage() {
                   className="text-black font-semibold hover:underline"
                   type="button"
                 >
-                  {isRegister ? "Masuk" : "Register"}
+                  {isRegister ? "Login" : "Register"}
                 </button>
               </p>
             </div>
