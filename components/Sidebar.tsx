@@ -40,7 +40,7 @@ export default function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 px-6 py-3 font-body-md font-medium transition-colors cursor-pointer active:opacity-80 ${
                 isActive
-                  ? "border-l-4 border-[#86efac] bg-on-primary/10 text-on-primary"
+                  ? "border-l-4 border-[#a3b18a] bg-on-primary/10 text-on-primary"
                   : "text-on-primary/70 hover:bg-on-primary/5"
               }`}
             >
