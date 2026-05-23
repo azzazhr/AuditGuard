@@ -128,7 +128,7 @@ export default function DashboardPage() {
       <Sidebar />
       <TopNav />
 
-      <div className="ml-[260px] pt-24 px-8 pb-12">
+      <div className="ml-0 lg:ml-[260px] pt-20 px-4 lg:pt-24 lg:px-8 pb-12">
         <main className="max-w-[1440px] mx-auto">
           {/* Page Header */}
           <div className="flex justify-between items-end mb-8">
@@ -710,3 +710,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+

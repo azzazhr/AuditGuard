@@ -26,7 +26,7 @@ export default function TopNav() {
   }, []);
 
   return (
-    <header className="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md border-b border-outline-variant dark:border-outline shadow-sm flex justify-between items-center px-8 z-40">
+    <header className="fixed top-0 right-0 w-full lg:w-[calc(100%-260px)] h-16 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-md border-b border-outline-variant dark:border-outline shadow-sm flex justify-between items-center px-4 lg:px-8 z-40">
       <div className="flex items-center flex-1">
         <div className="relative w-full max-w-md">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">

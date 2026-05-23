@@ -63,9 +63,9 @@ export default function AlertsPage() {
   return (
     <div className="flex min-h-screen bg-[#f8fafc]">
       <Sidebar />
-      <div className="flex-1 ml-[260px]">
+      <div className="flex-1 ml-0 lg:ml-[260px]">
         <TopNav />
-        <main className="pt-24 px-8 pb-12 max-w-[1440px]">
+        <main className="pt-20 px-4 lg:pt-24 lg:px-8 pb-12 max-w-[1440px]">
           <div className="flex justify-between items-end mb-8">
             <div>
               <h2 className="font-headline-md text-headline-md text-navy-custom tracking-tight">
@@ -254,3 +254,5 @@ export default function AlertsPage() {
     </div>
   );
 }
+
+

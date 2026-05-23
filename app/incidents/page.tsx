@@ -238,9 +238,9 @@ export default function IncidentsPage() {
   return (
     <div className="flex min-h-screen bg-surface">
       <Sidebar />
-      <div className="flex-1 ml-[260px]">
+      <div className="flex-1 ml-0 lg:ml-[260px]">
         <TopNav />
-        <main className="pt-24 px-8 pb-12 max-w-[1440px] w-full mx-auto">
+        <main className="pt-20 px-4 lg:pt-24 lg:px-8 pb-12 max-w-[1440px] w-full mx-auto">
           {/* Page Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -585,3 +585,5 @@ export default function IncidentsPage() {
     </div>
   );
 }
+
+

@@ -86,9 +86,9 @@ export default function ProfilePage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <div className="flex-1 ml-[260px]">
+      <div className="flex-1 ml-0 lg:ml-[260px]">
         <TopNav />
-        <main className="pt-24 px-8 pb-12 min-h-screen">
+        <main className="pt-20 px-4 lg:pt-24 lg:px-8 pb-12 min-h-screen">
           <div className="max-w-[1440px] mx-auto space-y-8">
 
             {/* Page Header */}
@@ -280,3 +280,5 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+

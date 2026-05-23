@@ -43,7 +43,7 @@ export default function AuditLogsPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar />
-      <div className="flex-1 ml-[260px]">
+      <div className="flex-1 ml-0 lg:ml-[260px]">
         <TopNav />
         <main className="pt-16 min-h-screen">
           <div className="max-w-[1440px] mx-auto p-8">
@@ -346,3 +346,4 @@ export default function AuditLogsPage() {
     </div>
   );
 }
+
