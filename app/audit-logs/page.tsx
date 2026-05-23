@@ -148,17 +148,19 @@ export default function AuditLogsPage() {
                           <th className="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-right">
                             Status
                           </th>
+                          <th className="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-right">
+                            Aksi
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-outline-variant">
                         {auditLogs.map((log) => (
                           <tr
                             key={log.id}
-                            onClick={() => handleRowClick(log)}
-                            className={`transition-colors cursor-pointer ${
+                            className={`transition-colors ${
                               log.status === 'peringatan'
-                                ? 'bg-error/5 hover:bg-error/10'
-                                : 'hover:bg-surface-container-low'
+                                ? 'bg-error/5'
+                                : ''
                             }`}
                           >
                             <td className="px-6 py-4">
@@ -201,18 +203,25 @@ export default function AuditLogsPage() {
                                 {log.ipAddress}
                               </span>
                             </td>
-                            <td className="px-6 py-4 text-right">
+                            <td className="px-6 py-4">
                               <span
                                 className={`text-[11px] font-bold uppercase ${
                                   log.status === 'peringatan'
                                     ? 'text-error'
-                                    : log.status === 'berhasil'
-                                    ? 'text-green-600'
-                                    : 'text-on-surface-variant'
+                                    : 'text-green-600'
                                 }`}
                               >
                                 {log.status === 'peringatan' ? 'Peringatan' : 'Berhasil'}
                               </span>
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <button
+                                onClick={() => handleRowClick(log)}
+                                className="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all"
+                                title="Lihat Detail"
+                              >
+                                <span className="material-symbols-outlined text-[20px]">visibility</span>
+                              </button>
                             </td>
                           </tr>
                         ))}
