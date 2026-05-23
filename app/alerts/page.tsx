@@ -2,6 +2,7 @@
 
 import Sidebar from '@/components/Sidebar';
 import TopNav from '@/components/TopNav';
+import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 
 interface Alert {
@@ -12,26 +13,40 @@ interface Alert {
   time: string;
 }
 
+const mapAlert = (a: any): Alert => ({
+  id: a.id,
+  severity: a.severity,
+  title: a.title,
+  description: a.description,
+  time: new Date(a.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
+});
+
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [loading, setLoading] = useState(true);
   const [timeFilter, setTimeFilter] = useState<'1H' | '24H'>('1H');
 
-  useEffect(() => {
+  const fetchAlerts = () => {
     fetch('/api/alerts')
       .then(r => r.json())
       .then(data => {
-        if (data.alerts) {
-          setAlerts(data.alerts.map((a: any) => ({
-            id: a.id,
-            severity: a.severity,
-            title: a.title,
-            description: a.description,
-            time: new Date(a.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
-          })));
-        }
+        if (data.alerts) setAlerts(data.alerts.map(mapAlert));
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchAlerts();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel('alerts-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'alerts' }, () => {
+        fetchAlerts();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const getSeverityColor = (severity: string) => {

@@ -2,6 +2,7 @@
 
 import Sidebar from '@/components/Sidebar';
 import TopNav from '@/components/TopNav';
+import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 
 interface AuditLog {
@@ -13,27 +14,41 @@ interface AuditLog {
   status: 'berhasil' | 'peringatan';
 }
 
+const mapLog = (log: any): AuditLog => ({
+  id: log.id,
+  userId: log.user_id,
+  action: log.action,
+  time: new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+  ipAddress: log.ip_address,
+  status: log.status,
+});
+
 export default function AuditLogsPage() {
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchLogs = () => {
     fetch('/api/audit-logs')
       .then(r => r.json())
       .then(data => {
-        if (data.logs) {
-          setAuditLogs(data.logs.map((log: any) => ({
-            id: log.id,
-            userId: log.user_id,
-            action: log.action,
-            time: new Date(log.created_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-            ipAddress: log.ip_address,
-            status: log.status,
-          })));
-        }
+        if (data.logs) setAuditLogs(data.logs.map(mapLog));
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchLogs();
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel('audit-logs-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'audit_logs' }, () => {
+        fetchLogs();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const handleRowClick = (log: AuditLog) => {

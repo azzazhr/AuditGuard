@@ -3,6 +3,7 @@
 import Sidebar from '@/components/Sidebar';
 import Toast from '@/components/Toast';
 import TopNav from '@/components/TopNav';
+import { createClient } from '@/lib/supabase/client';
 import { FormEvent, useEffect, useState } from 'react';
 
 interface Incident {
@@ -16,28 +17,43 @@ interface Incident {
   detectedAt: string;
 }
 
+const mapIncident = (inc: any): Incident => ({
+  id: inc.id,
+  title: inc.title,
+  description: inc.description || '',
+  severity: inc.severity,
+  status: inc.status,
+  target: inc.target || '',
+  assignedTo: inc.assigned_to || '',
+  detectedAt: new Date(inc.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
+});
+
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchIncidents = () => {
     fetch('/api/incidents')
       .then(r => r.json())
       .then(data => {
-        if (data.incidents) {
-          setIncidents(data.incidents.map((inc: any) => ({
-            id: inc.id,
-            title: inc.title,
-            description: inc.description || '',
-            severity: inc.severity,
-            status: inc.status,
-            target: inc.target || '',
-            assignedTo: inc.assigned_to || '',
-            detectedAt: new Date(inc.created_at).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' }),
-          })));
-        }
+        if (data.incidents) setIncidents(data.incidents.map(mapIncident));
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchIncidents();
+
+    // Realtime subscription
+    const supabase = createClient();
+    const channel = supabase
+      .channel('incidents-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'incidents' }, () => {
+        fetchIncidents();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const [showModal, setShowModal] = useState(false);
