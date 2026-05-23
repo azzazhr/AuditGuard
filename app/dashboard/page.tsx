@@ -31,6 +31,8 @@ export default function DashboardPage() {
   const [criticalAlerts, setCriticalAlerts] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [recentLogs, setRecentLogs] = useState<{userId: string; action: string; time: string; ipAddress: string; status: string}[]>([]);
+  const [chartData, setChartData] = useState<{bulan: string; insiden: number}[]>([]);
+  const [severityData, setSeverityData] = useState<{name: string; value: number}[]>([]);
   const [formData, setFormData] = useState({ title: '', severity: 'rendah', target: '', description: '' });
   const [editIncident, setEditIncident] = useState<Incident | null>(null);
   const [saving, setSaving] = useState(false);
@@ -60,6 +62,33 @@ export default function DashboardPage() {
             severity: inc.severity,
             status: inc.status === 'terbuka' ? 'Terbuka' : inc.status === 'dalam-proses' ? 'Investigasi' : 'Selesai',
           })));
+
+          // Hitung tren per bulan dari data nyata
+          const bulanNames = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+          const counts: Record<string, number> = {};
+          data.incidents.forEach((inc: any) => {
+            const d = new Date(inc.created_at);
+            const key = bulanNames[d.getMonth()];
+            counts[key] = (counts[key] || 0) + 1;
+          });
+          // Ambil 6 bulan terakhir yang ada datanya, atau semua bulan yang ada
+          const result = Object.entries(counts).map(([bulan, insiden]) => ({ bulan, insiden }));
+          setChartData(result.length > 0 ? result : bulanNames.slice(0, 6).map(b => ({ bulan: b, insiden: 0 })));
+
+          // Hitung distribusi keparahan
+          const total = data.incidents.length;
+          if (total > 0) {
+            const kritis = data.incidents.filter((i: any) => i.severity === 'kritis').length;
+            const tinggi = data.incidents.filter((i: any) => i.severity === 'tinggi').length;
+            const sedang = data.incidents.filter((i: any) => i.severity === 'sedang').length;
+            const rendah = data.incidents.filter((i: any) => i.severity === 'rendah').length;
+            const sv = [];
+            if (kritis > 0) sv.push({ name: 'Kritis', value: Math.round((kritis / total) * 100) });
+            if (tinggi > 0) sv.push({ name: 'Tinggi', value: Math.round((tinggi / total) * 100) });
+            if (sedang > 0) sv.push({ name: 'Sedang', value: Math.round((sedang / total) * 100) });
+            if (rendah > 0) sv.push({ name: 'Rendah', value: Math.round((rendah / total) * 100) });
+            setSeverityData(sv);
+          }
         }
       });
 
@@ -226,14 +255,8 @@ export default function DashboardPage() {
                 <h4 className="font-headline-sm text-navy-custom">Tren Insiden per Bulan</h4>
               </div>
               <ResponsiveContainer width="100%" height={240}>
-                <BarChart data={[
-                  { bulan: 'Jan', insiden: 12 },
-                  { bulan: 'Feb', insiden: 19 },
-                  { bulan: 'Mar', insiden: 8 },
-                  { bulan: 'Apr', insiden: 25 },
-                  { bulan: 'Mei', insiden: 14 },
-                  { bulan: 'Jun', insiden: 30 },
-                  { bulan: 'Jul', insiden: 22 },
+                <BarChart data={chartData.length > 0 ? chartData : [
+                  { bulan: 'Jan', insiden: 0 },
                 ]} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="bulan" tick={{ fontSize: 12 }} />
@@ -253,7 +276,7 @@ export default function DashboardPage() {
               <ResponsiveContainer width="100%" height={240}>
                 <PieChart>
                   <Pie
-                    data={[
+                    data={severityData.length > 0 ? severityData : [
                       { name: 'Kritis', value: 25 },
                       { name: 'Tinggi', value: 40 },
                       { name: 'Sedang', value: 35 },
@@ -265,9 +288,17 @@ export default function DashboardPage() {
                     paddingAngle={3}
                     dataKey="value"
                   >
-                    <Cell fill="#ef4444" />
-                    <Cell fill="#f97316" />
-                    <Cell fill="#94a3b8" />
+                    {(severityData.length > 0 ? severityData : [
+                      { name: 'Kritis' }, { name: 'Tinggi' }, { name: 'Sedang' }
+                    ]).map((entry, index) => {
+                      const colors: Record<string, string> = {
+                        'Kritis': '#ef4444',
+                        'Tinggi': '#f97316',
+                        'Sedang': '#94a3b8',
+                        'Rendah': '#86efac',
+                      };
+                      return <Cell key={index} fill={colors[entry.name] || '#94a3b8'} />;
+                    })}
                   </Pie>
                   <Tooltip
                     contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }}
