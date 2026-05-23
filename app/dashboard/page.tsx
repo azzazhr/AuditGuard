@@ -4,6 +4,10 @@ import Sidebar from "@/components/Sidebar";
 import Toast from "@/components/Toast";
 import TopNav from "@/components/TopNav";
 import { useEffect, useState } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
+} from "recharts";
 
 interface Incident {
   id: string;
@@ -141,175 +145,130 @@ export default function DashboardPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+            {/* Card 1 - Insiden Total - Biru */}
+            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-md border-l-4 border-l-blue-500">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-2.5 bg-secondary-container/30 text-navy-custom rounded-lg">
+                <div className="p-2.5 bg-blue-50 text-blue-600 rounded-lg">
                   <span className="material-symbols-outlined">database</span>
                 </div>
-                <span className="text-success-neon bg-navy-custom px-2 py-0.5 rounded text-[10px] font-bold">
+                <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded text-[10px] font-bold">
                   +12%
                 </span>
               </div>
-              <p className="text-on-surface-variant/60 font-medium text-[11px] mb-1 uppercase tracking-wider">
+              <p className="text-gray-500 font-medium text-[11px] mb-1 uppercase tracking-wider">
                 Insiden Total
               </p>
-              <h3 className="font-display-lg text-[32px] text-navy-custom">{totalIncidents.toLocaleString('id-ID')}</h3>
+              <h3 className="font-display-lg text-[32px] text-blue-600">{totalIncidents.toLocaleString('id-ID')}</h3>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+            {/* Card 2 - Alert Aktif - Merah */}
+            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-md border-l-4 border-l-red-500">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-2.5 bg-error/10 text-error rounded-lg">
+                <div className="p-2.5 bg-red-50 text-red-500 rounded-lg">
                   <span className="material-symbols-outlined">warning</span>
                 </div>
-                <span className="bg-error text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">
+                <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded font-bold uppercase">
                   {criticalAlerts} Kritis
                 </span>
               </div>
-              <p className="text-on-surface-variant/60 font-medium text-[11px] mb-1 uppercase tracking-wider">
+              <p className="text-gray-500 font-medium text-[11px] mb-1 uppercase tracking-wider">
                 Alert Aktif
               </p>
-              <h3 className="font-display-lg text-[32px] text-navy-custom">{totalAlerts}</h3>
+              <h3 className="font-display-lg text-[32px] text-red-500">{totalAlerts}</h3>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+            {/* Card 3 - Skor Anomali - Hijau */}
+            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-md border-l-4 border-l-emerald-500">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-2.5 bg-navy-custom/5 text-navy-custom rounded-lg">
+                <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-lg">
                   <span className="material-symbols-outlined">verified_user</span>
                 </div>
-                <span className="text-on-surface-variant/40 font-label-mono text-[10px] uppercase">
+                <span className="text-emerald-600 bg-emerald-50 font-label-mono text-[10px] uppercase font-bold px-2 py-0.5 rounded">
                   Aman
                 </span>
               </div>
-              <p className="text-on-surface-variant/60 font-medium text-[11px] mb-1 uppercase tracking-wider">
+              <p className="text-gray-500 font-medium text-[11px] mb-1 uppercase tracking-wider">
                 Skor Anomali
               </p>
-              <h3 className="font-display-lg text-[32px] text-navy-custom">
-                98<span className="text-[16px] text-on-surface-variant/30">/100</span>
+              <h3 className="font-display-lg text-[32px] text-emerald-600">
+                98<span className="text-[16px] text-gray-300">/100</span>
               </h3>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+            {/* Card 4 - Pengguna Aktif - Ungu */}
+            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-md border-l-4 border-l-purple-500">
               <div className="flex justify-between items-start mb-4">
-                <div className="p-2.5 bg-surface-container-high text-on-surface rounded-lg">
+                <div className="p-2.5 bg-purple-50 text-purple-600 rounded-lg">
                   <span className="material-symbols-outlined">group</span>
                 </div>
               </div>
-              <p className="text-on-surface-variant/60 font-medium text-[11px] mb-1 uppercase tracking-wider">
+              <p className="text-gray-500 font-medium text-[11px] mb-1 uppercase tracking-wider">
                 Pengguna Aktif
               </p>
-              <h3 className="font-display-lg text-[32px] text-navy-custom">{totalUsers}</h3>
+              <h3 className="font-display-lg text-[32px] text-purple-600">{totalUsers}</h3>
             </div>
           </div>
 
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="lg:col-span-2 bg-white p-8 rounded-xl border border-outline-variant/30 shadow-sm">
-              <div className="flex justify-between items-center mb-8">
-                <h4 className="font-headline-sm text-navy-custom">Tren Insiden</h4>
-                <select className="bg-surface-container-low border border-outline-variant/20 rounded-lg text-[12px] font-semibold px-3 py-1.5 focus:ring-0">
-                  <option>30 Hari Terakhir</option>
-                  <option>7 Hari Terakhir</option>
-                </select>
+            {/* Bar Chart - Tren Insiden */}
+            <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+              <div className="flex justify-between items-center mb-6">
+                <h4 className="font-headline-sm text-navy-custom">Tren Insiden per Bulan</h4>
               </div>
-              <div className="h-[240px] w-full relative">
-                <svg
-                  className="absolute inset-0 w-full h-full"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 1000 300"
-                >
-                  <path
-                    d="M0,250 Q100,220 200,240 T400,180 T600,200 T800,120 T1000,150"
-                    fill="none"
-                    stroke="#0f172a"
-                    strokeWidth="2.5"
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={[
+                  { bulan: 'Jan', insiden: 12 },
+                  { bulan: 'Feb', insiden: 19 },
+                  { bulan: 'Mar', insiden: 8 },
+                  { bulan: 'Apr', insiden: 25 },
+                  { bulan: 'Mei', insiden: 14 },
+                  { bulan: 'Jun', insiden: 30 },
+                  { bulan: 'Jul', insiden: 22 },
+                ]} margin={{ top: 5, right: 10, left: -10, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="bulan" tick={{ fontSize: 12 }} />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }}
+                    formatter={(value: number) => [`${value} insiden`, 'Jumlah']}
                   />
-                  <path
-                    d="M0,250 Q100,220 200,240 T400,180 T600,200 T800,120 T1000,150 L1000,300 L0,300 Z"
-                    fill="url(#gradient-chart)"
-                    opacity="0.05"
-                  />
-                  <defs>
-                    <linearGradient id="gradient-chart" x1="0%" x2="0%" y1="0%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: "rgb(15, 23, 42)", stopOpacity: 1 }} />
-                      <stop offset="100%" style={{ stopColor: "rgb(15, 23, 42)", stopOpacity: 0 }} />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-              <div className="flex justify-between mt-6 text-[10px] font-label-mono text-on-surface-variant/40 uppercase tracking-widest">
-                <span>01 MEI</span>
-                <span>08 MEI</span>
-                <span>15 MEI</span>
-                <span>22 MEI</span>
-                <span>30 MEI</span>
-              </div>
+                  <Bar dataKey="insiden" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
 
-            <div className="bg-white p-8 rounded-xl border border-outline-variant/30 shadow-sm">
-              <h4 className="font-headline-sm text-navy-custom mb-8">Distribusi Keparahan</h4>
-              <div className="relative w-44 h-44 mx-auto mb-8">
-                <svg className="w-full h-full transform -rotate-90">
-                  <circle cx="50%" cy="50%" fill="transparent" r="40%" stroke="#f1f5f9" strokeWidth="16" />
-                  <circle
+            {/* Pie Chart - Distribusi Keparahan */}
+            <div className="bg-white p-6 rounded-xl border border-outline-variant/30 shadow-sm">
+              <h4 className="font-headline-sm text-navy-custom mb-4">Distribusi Keparahan</h4>
+              <ResponsiveContainer width="100%" height={240}>
+                <PieChart>
+                  <Pie
+                    data={[
+                      { name: 'Kritis', value: 25 },
+                      { name: 'Tinggi', value: 40 },
+                      { name: 'Sedang', value: 35 },
+                    ]}
                     cx="50%"
                     cy="50%"
-                    fill="transparent"
-                    r="40%"
-                    stroke="#ba1a1a"
-                    strokeDasharray="25 100"
-                    strokeWidth="16"
+                    innerRadius={55}
+                    outerRadius={85}
+                    paddingAngle={3}
+                    dataKey="value"
+                  >
+                    <Cell fill="#ef4444" />
+                    <Cell fill="#f97316" />
+                    <Cell fill="#94a3b8" />
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12px' }}
+                    formatter={(value: number) => [`${value}%`, '']}
                   />
-                  <circle
-                    cx="50%"
-                    cy="50%"
-                    fill="transparent"
-                    r="40%"
-                    stroke="#0f172a"
-                    strokeDasharray="40 100"
-                    strokeDashoffset="-25"
-                    strokeWidth="16"
-                  />
-                  <circle
-                    cx="50%"
-                    cy="50%"
-                    fill="transparent"
-                    r="40%"
-                    stroke="#94a3b8"
-                    strokeDasharray="35 100"
-                    strokeDashoffset="-65"
-                    strokeWidth="16"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <p className="text-[28px] font-bold text-navy-custom">100%</p>
-                </div>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-error"></span>
-                    <span className="font-medium text-on-surface">Kritis</span>
-                  </div>
-                  <span className="font-label-mono text-on-surface-variant">25%</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-navy-custom"></span>
-                    <span className="font-medium text-on-surface">Tinggi</span>
-                  </div>
-                  <span className="font-label-mono text-on-surface-variant">40%</span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                    <span className="font-medium text-on-surface">Sedang</span>
-                  </div>
-                  <span className="font-label-mono text-on-surface-variant">35%</span>
-                </div>
-              </div>
+                  <Legend iconType="circle" iconSize={10} wrapperStyle={{ fontSize: '12px' }} />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
-
           {/* Lists Section */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {/* Incident List */}
