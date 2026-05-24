@@ -4,19 +4,21 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useRole } from "@/lib/useRole";
 
 const menuItems = [
   { icon: "dashboard", label: "Dashboard", href: "/dashboard", fill: true },
   { icon: "list_alt", label: "Log Insiden", href: "/incidents" },
   { icon: "history_edu", label: "Log Audit", href: "/audit-logs" },
   { icon: "notification_important", label: "Peringatan & Anomali", href: "/alerts" },
-  { icon: "manage_accounts", label: "Manajemen Pengguna", href: "/user-management" },
+  { icon: "manage_accounts", label: "Manajemen Pengguna", href: "/user-management", adminOnly: true },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const { isAdmin } = useRole();
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -67,6 +69,7 @@ export default function Sidebar() {
 
         <nav className="flex-grow space-y-1">
           {menuItems.map((item) => {
+            if ((item as any).adminOnly && !isAdmin) return null;
             const isActive = pathname === item.href;
             return (
               <Link

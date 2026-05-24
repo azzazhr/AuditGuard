@@ -12,6 +12,7 @@ interface Field {
   key: FieldKey;
   label: string;
   type?: string;
+  adminOnly?: boolean;
   options?: string[];
 }
 
@@ -21,6 +22,7 @@ const fields: Field[] = [
   {
     key: 'department',
     label: 'Departemen',
+    adminOnly: true,
     options: ['Kepatuhan & Audit Internal', 'Manajemen Risiko', 'Teknologi Informasi', 'Sumber Daya Manusia'],
   },
 ];
@@ -165,7 +167,7 @@ export default function ProfilePage() {
                     <h3 className="font-bold text-[20px] text-primary">Informasi Pribadi</h3>
                   </div>
                   <div className="p-6 divide-y divide-outline-variant/30">
-                    {fields.map((field) => (
+                    {fields.filter(f => !f.adminOnly || isAdmin).map((field) => (
                       <div key={field.key} className="py-4 flex items-center justify-between group">
                         <div className="space-y-1">
                           <p className="text-on-surface-variant text-[11px] uppercase tracking-wider font-bold font-mono">
