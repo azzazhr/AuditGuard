@@ -5,6 +5,7 @@ import Toast from '@/components/Toast';
 import TopNav from '@/components/TopNav';
 import { createClient } from '@/lib/supabase/client';
 import { FormEvent, useEffect, useState } from 'react';
+import { useRole } from '@/lib/useRole';
 
 interface Incident {
   id: string;
@@ -29,6 +30,7 @@ const mapIncident = (inc: any): Incident => ({
 });
 
 export default function IncidentsPage() {
+  const { isAdmin } = useRole();
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -269,6 +271,7 @@ export default function IncidentsPage() {
               </p>
             </div>
             <div className="flex gap-3">
+              {isAdmin && (
               <button
                 onClick={() => openModal('create')}
                 className="bg-primary text-on-primary px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 hover:opacity-90 transition-all"
@@ -276,6 +279,7 @@ export default function IncidentsPage() {
                 <span className="material-symbols-outlined text-sm">add</span>
                 Buat Insiden Baru
               </button>
+              )}
               <button className="bg-surface border border-outline-variant text-on-surface-variant px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 hover:bg-surface-container-low transition-all">
                 <span className="material-symbols-outlined text-sm">download</span>
                 Ekspor
@@ -394,6 +398,7 @@ export default function IncidentsPage() {
                           >
                             <span className="material-symbols-outlined text-[20px]">visibility</span>
                           </button>
+                          {isAdmin && (
                           <button
                             onClick={() => openModal('edit', incident)}
                             className="p-1.5 hover:bg-primary/5 rounded-lg text-on-surface-variant hover:text-primary transition-colors"
@@ -401,6 +406,8 @@ export default function IncidentsPage() {
                           >
                             <span className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
+                          )}
+                          {isAdmin && (
                           <button
                             onClick={() => confirmDelete(incident.id)}
                             className="p-1.5 hover:bg-error/5 rounded-lg text-on-surface-variant hover:text-error transition-colors"
@@ -408,6 +415,7 @@ export default function IncidentsPage() {
                           >
                             <span className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
+                          )}
                         </div>
                       </td>
                     </tr>

@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [selectedRole, setSelectedRole] = useState('user');
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -24,29 +25,49 @@ export default function LoginPage() {
 
     if (isRegister) {
       const name = formData.get('name') as string;
-      const { error } = await supabase.auth.signUp({
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { full_name: name },
+          data: { full_name: name, role: selectedRole },
         },
       });
-      if (error) {
-        setError(error.message);
+      if (signUpError) {
+        setError(signUpError.message);
         setIsLoading(false);
       } else {
-        // Langsung pindah ke form login
+        // Simpan role ke tabel profiles
+        if (signUpData.user) {
+          await supabase.from('profiles').upsert({
+            id: signUpData.user.id,
+            full_name: name,
+            email,
+            role: selectedRole,
+          });
+        }
         setIsRegister(false);
         setError('');
         setSuccess('Akun berhasil dibuat! Silakan login.');
         setIsLoading(false);
       }
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) {
         setError('Email atau kata sandi salah.');
         setIsLoading(false);
       } else {
+        // Ambil role dari profiles
+        if (signInData.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', signInData.user.id)
+            .single();
+          // Simpan role ke localStorage untuk dipakai di halaman lain
+          if (profile?.role) {
+            localStorage.setItem('userRole', profile.role);
+          }
+        }
         router.push('/dashboard');
       }
     }
@@ -294,6 +315,23 @@ export default function LoginPage() {
                 <a className="text-black hover:underline font-medium" href="#">
                   Lupa kata sandi?
                 </a>
+              </div>
+            )}
+
+            {/* Role Dropdown (Register Only) */}
+            {isRegister && (
+              <div className="space-y-2">
+                <label className="text-[11px] font-semibold text-gray-700 uppercase tracking-wider">
+                  Daftar Sebagai
+                </label>
+                <select
+                  value={selectedRole}
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-[15px] focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
+                >
+                  <option value="admin">Admin — akses penuh (CRUD)</option>
+                  <option value="user">User — hanya bisa melihat</option>
+                </select>
               </div>
             )}
 

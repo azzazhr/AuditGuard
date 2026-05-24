@@ -5,6 +5,7 @@ import Toast from '@/components/Toast';
 import TopNav from '@/components/TopNav';
 import { createClient } from '@/lib/supabase/client';
 import { FormEvent, useEffect, useState } from 'react';
+import { useRole } from '@/lib/useRole';
 
 interface User {
   id: string;
@@ -16,6 +17,7 @@ interface User {
 }
 
 export default function SettingsPage() {
+  const { isAdmin } = useRole();
   const [users, setUsers] = useState<User[]>([]);
   const [currentUserName, setCurrentUserName] = useState('');
   const [currentUserInitials, setCurrentUserInitials] = useState('');
@@ -197,6 +199,7 @@ export default function SettingsPage() {
                         Kelola akses personil dan hak istimewa sistem.
                       </p>
                     </div>
+                    {isAdmin && (
                     <button
                       onClick={() => openUserModal('create')}
                       className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-body-sm font-bold hover:opacity-90 transition-all"
@@ -204,6 +207,7 @@ export default function SettingsPage() {
                       <span className="material-symbols-outlined text-[18px]">person_add</span>
                       Tambah Pengguna
                     </button>
+                    )}
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left">
@@ -266,6 +270,7 @@ export default function SettingsPage() {
                                     visibility
                                   </span>
                                 </button>
+                                {isAdmin && (
                                 <button
                                   onClick={() => openUserModal('edit', user)}
                                   className="p-1.5 text-on-surface-variant hover:text-primary transition-colors"
@@ -273,6 +278,8 @@ export default function SettingsPage() {
                                 >
                                   <span className="material-symbols-outlined text-[18px]">edit</span>
                                 </button>
+                                )}
+                                {isAdmin && (
                                 <button
                                   onClick={() => confirmDelete(user.id)}
                                   className="p-1.5 text-on-surface-variant hover:text-error transition-colors"
@@ -280,6 +287,7 @@ export default function SettingsPage() {
                                 >
                                   <span className="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
+                                )}
                               </div>
                             </td>
                           </tr>

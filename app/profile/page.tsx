@@ -4,6 +4,7 @@ import Sidebar from '@/components/Sidebar';
 import TopNav from '@/components/TopNav';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useRole } from '@/lib/useRole';
 
 type FieldKey = 'name' | 'email' | 'department';
 
@@ -25,6 +26,7 @@ const fields: Field[] = [
 ];
 
 export default function ProfilePage() {
+  const { isAdmin, role } = useRole();
   const [data, setData] = useState<Record<FieldKey, string>>({
     name: '',
     email: '',
@@ -145,6 +147,10 @@ export default function ProfilePage() {
                     <span className="material-symbols-outlined text-[14px]">verified</span>
                     Akun Terverifikasi
                   </span>
+                  <span className="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-[12px] font-bold flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">shield_person</span>
+                    {role === 'admin' ? 'Admin' : 'User'}
+                  </span>
                 </div>
               </div>
             </section>
@@ -168,18 +174,22 @@ export default function ProfilePage() {
                           <p className="text-primary font-medium text-[16px]">{data[field.key] || '-'}</p>
                         </div>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {isAdmin && (
                           <button
                             onClick={() => openEdit(field)}
                             className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all"
                           >
                             <span className="material-symbols-outlined text-[20px]">edit</span>
                           </button>
+                          )}
+                          {isAdmin && (
                           <button
                             onClick={() => setDeleteField(field)}
                             className="p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-all"
                           >
                             <span className="material-symbols-outlined text-[20px]">delete</span>
                           </button>
+                          )}
                         </div>
                       </div>
                     ))}

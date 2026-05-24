@@ -5,6 +5,7 @@ import Sidebar from "@/components/Sidebar";
 import Toast from "@/components/Toast";
 import TopNav from "@/components/TopNav";
 import { useEffect, useState } from "react";
+import { useRole } from "@/lib/useRole";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
@@ -19,6 +20,7 @@ interface Incident {
 }
 
 export default function DashboardPage() {
+  const { isAdmin } = useRole();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
@@ -171,6 +173,7 @@ export default function DashboardPage() {
               </p>
             </div>
             <div className="flex gap-3">
+              {isAdmin && (
               <button
                 onClick={() => setShowModal(true)}
                 className="px-5 py-2 bg-navy-custom text-on-primary rounded-lg text-body-sm font-bold hover:opacity-90 shadow-sm transition-all flex items-center gap-2"
@@ -178,6 +181,7 @@ export default function DashboardPage() {
                 <span className="material-symbols-outlined text-[18px]">add</span>
                 Audit Baru
               </button>
+              )}
             </div>
           </div>
 
@@ -376,6 +380,7 @@ export default function DashboardPage() {
                             >
                               <span className="material-symbols-outlined text-[18px]">visibility</span>
                             </button>
+                            {isAdmin && (
                             <button
                               onClick={() => openEditModal(incident)}
                               className="p-1.5 text-on-surface-variant hover:text-navy-custom transition-colors"
@@ -383,6 +388,8 @@ export default function DashboardPage() {
                             >
                               <span className="material-symbols-outlined text-[18px]">edit</span>
                             </button>
+                            )}
+                            {isAdmin && (
                             <button
                               onClick={() => confirmDelete(incident.id)}
                               className="p-1.5 text-on-surface-variant hover:text-error transition-colors"
@@ -390,6 +397,7 @@ export default function DashboardPage() {
                             >
                               <span className="material-symbols-outlined text-[18px]">delete</span>
                             </button>
+                            )}
                           </div>
                         </td>
                       </tr>
