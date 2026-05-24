@@ -36,13 +36,17 @@ export default function LoginPage() {
         setError(signUpError.message);
         setIsLoading(false);
       } else {
-        // Simpan role ke tabel profiles
+        // Simpan role ke tabel profiles menggunakan service role via API
         if (signUpData.user) {
-          await supabase.from('profiles').upsert({
-            id: signUpData.user.id,
-            full_name: name,
-            email,
-            role: selectedRole,
+          await fetch('/api/set-role', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId: signUpData.user.id,
+              name,
+              email,
+              role: selectedRole,
+            }),
           });
         }
         setIsRegister(false);

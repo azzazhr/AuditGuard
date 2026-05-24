@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 export default function TopNav() {
   const [userName, setUserName] = useState('');
   const [userInitials, setUserInitials] = useState('');
+  const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -20,6 +21,14 @@ export default function TopNav() {
           ? (parts[0][0] + parts[1][0]).toUpperCase()
           : name.slice(0, 2).toUpperCase();
         setUserInitials(initials);
+
+        // Ambil role dari profiles
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        setUserRole(profile?.role || 'user');
       }
     };
     fetchUser();
@@ -47,7 +56,7 @@ export default function TopNav() {
           <div className="text-right hidden lg:block">
             <p className="text-body-sm font-bold text-navy-custom">{userName || 'Loading...'}</p>
             <p className="text-[10px] text-on-surface-variant font-medium uppercase">
-              Pengguna
+              {userRole === 'admin' ? 'Admin' : 'Pengguna'}
             </p>
           </div>
           <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center border border-outline-variant">
